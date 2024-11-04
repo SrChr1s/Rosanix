@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+a {
+  &:hover {
+    color: inherit;
+  }
+}
+
+body {
+  background-color: #bbd0ff;
+}
+
 @font-face {
   font-family: "Bebas";
   src: url("./assets/fonts/BebasNeue-Regular.ttf");
