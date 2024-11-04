@@ -12,13 +12,13 @@ export default function Login() {
 
   const handleSend = async (values) => {
     setLoading(true);
-
+    console.log(values);
     try {
       await loginRequest(values);
     } catch ({ response }) {
       withReactContent(Swal).fire({
         icon: "error",
-        text: response,
+        text: response.data,
         confirmButtonText: "Aceptar",
       });
       setLoading(false);
@@ -56,7 +56,7 @@ export default function Login() {
 
         <Form.Item
           hasFeedback
-          name="pass"
+          name="passw"
           label="Contraseña"
           validateFirst
           rules={[
@@ -72,9 +72,7 @@ export default function Login() {
 
         <Form.Item>
           <div className="flex justify-between items-center">
-            <Form.Item name="remember-me" valuePropName="checked" noStyle>
-              <Checkbox className="select-none">Recuérdame</Checkbox>
-            </Form.Item>
+            <Checkbox className="select-none">Recuérdame</Checkbox>
             <div className="hover:scale-105 duration-100">
               <Link to="/forgot-password">Olvidé la contraseña</Link>
             </div>
