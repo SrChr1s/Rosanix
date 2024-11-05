@@ -9,10 +9,14 @@ export default function Landing() {
     <Layout className="h-dvh bg-gradient-to-br from-[#9fcbf5] to-[#d3bbf3]">
       <Header className="flex justify-between items-center px-4 sm:px-8 lg:px-12 min-h-20 bg-transparent font-[Roboto]">
         <div className="logo w-16 drop-shadow-sm sm:hidden">
-          <img src="/logo-rosanix.png" alt="logo" />
+          <Link to="/">
+            <img src="/logo-rosanix.png" alt="logo" />
+          </Link>
         </div>
         <div className="logo w-60 drop-shadow-sm hidden sm:block">
-          <img src="/main-logo.png" alt="logo" />
+          <Link to="/">
+            <img src="/main-logo.png" alt="logo" />
+          </Link>
         </div>
         <div className="flex items-center space-x-4">
           <Link to="/login" className="sm:hidden">

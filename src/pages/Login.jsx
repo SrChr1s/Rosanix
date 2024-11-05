@@ -26,10 +26,10 @@ export default function Login() {
   };
 
   return (
-    <div className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#9fcbf5] to-[#d3bbf3]">
+    <div className="h-dvh flex justify-center items-center  bg-gradient-to-br from-[#9fcbf5] to-[#d3bbf3]">
       <Form
         name="login"
-        className="flex flex-col px-20 pt-10 w-[500px] rounded-xl bg-white/35"
+        className="flex flex-col  sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"
         layout="vertical"
         autoComplete="off"
         onFinish={handleSend}
