@@ -21,3 +21,8 @@ body {
   font-family: "Roboto";
   src: url("./assets/fonts/RobotoCondensed-Regular.ttf");
 }
+
+@font-face {
+  font-family: "Nunito";
+  src: url("./assets/fonts/Nunito.ttf");
+}
