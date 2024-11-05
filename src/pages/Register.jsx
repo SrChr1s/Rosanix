@@ -45,7 +45,7 @@ export default function Register() {
           <Redirect to="/home" />;
         });
     } catch (error) {
-      if (error.name == "AxiosError") {
+      if (error.code == "ERR_NETWORK") {
         setLoading(false);
         return withReactContent(Swal).fire({
           icon: "error",
@@ -58,7 +58,7 @@ export default function Register() {
       withReactContent(Swal).fire({
         icon: "error",
         title: "Ups!",
-        text: response.data,
+        text: error.response.data,
         confirmButtonText: "Aceptar",
       });
     }

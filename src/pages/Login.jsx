@@ -13,17 +13,25 @@ export default function Login() {
 
   const handleSend = async (values) => {
     setLoading(true);
-    console.log(values);
     try {
       await loginRequest(values);
-    } catch ({ response }) {
+    } catch (error) {
+      if (error.code == "ERR_NETWORK") {
+        setLoading(false);
+        return withReactContent(Swal).fire({
+          icon: "error",
+          title: "Ups!",
+          text: "Algo no está funcionando en nuestros servidores, espera un poco antes de volver a intentar",
+          confirmButtonText: "Aceptar",
+        });
+      }
+      setLoading(false);
       withReactContent(Swal).fire({
         icon: "error",
         title: "Ups!",
-        text: response.data,
+        text: error.response.data,
         confirmButtonText: "Aceptar",
       });
-      setLoading(false);
     }
   };
 
