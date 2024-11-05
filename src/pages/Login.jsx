@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { loginRequest } from "../api/auth";
 import { Form, Input, Checkbox, Spin } from "antd";
-import { LoadingOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
+import { LoadingOutlined, LockOutlined } from "@ant-design/icons";
+import { FaRegEnvelope } from "react-icons/fa6";
 import Button from "../components/Button";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -18,6 +19,7 @@ export default function Login() {
     } catch ({ response }) {
       withReactContent(Swal).fire({
         icon: "error",
+        title: "Ups!",
         text: response.data,
         confirmButtonText: "Aceptar",
       });
@@ -51,7 +53,11 @@ export default function Login() {
             { max: 100, message: "No puede sobrepasar los 100 caracteres" },
           ]}
         >
-          <Input prefix={<UserOutlined />} placeholder="correo@email.com" className="rounded-2xl text-gray-500 p-2"/>
+          <Input
+            prefix={<FaRegEnvelope />}
+            placeholder="correo@email.com"
+            className="rounded-2xl text-gray-500 p-2"
+          />
         </Form.Item>
 
         <Form.Item
@@ -73,9 +79,13 @@ export default function Login() {
 
         <Form.Item>
           <div className="flex justify-between items-center">
-            <Checkbox className="select-none font-[Nunito]">Recuérdame</Checkbox>
+            <Checkbox className="select-none font-[Nunito]">
+              Recuérdame
+            </Checkbox>
             <div className="hover:scale-105 duration-100">
-              <Link to="/forgot-password" className="font-[Nunito]">Olvidé la contraseña</Link>
+              <Link to="/forgot-password" className="font-[Nunito]">
+                Olvidé la contraseña
+              </Link>
             </div>
           </div>
         </Form.Item>
@@ -85,7 +95,9 @@ export default function Login() {
         </Form.Item>
 
         <Form.Item className="self-center hover:scale-105 duration-100">
-          <Link to="/register" className="font-[Nunito]">¿Aún no tenés una cuenta? Regístrate</Link>
+          <Link to="/register" className="font-[Nunito]">
+            ¿Aún no tenés una cuenta? Regístrate
+          </Link>
         </Form.Item>
       </Form>
 
