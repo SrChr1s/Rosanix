@@ -26,17 +26,17 @@ export default function Login() {
   };
 
   return (
-    <div className="h-dvh flex justify-center items-center">
+    <div className="h-dvh flex justify-center items-center  bg-gradient-to-br from-[#9fcbf5] to-[#d3bbf3]">
       <Form
         name="login"
-        className="flex flex-col px-20 pt-10 w-[500px] rounded-xl bg-[#B8C0FF]"
+        className="flex flex-col  sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"
         layout="vertical"
         autoComplete="off"
         onFinish={handleSend}
       >
-        <div className="self-center w-24 mb-5">
+        <div className="self-center w-72 mb-5">
           <Link to="/">
-            <img src="/kitty2.png" alt="img-kitty" />
+            <img src="/rosanix-logo.png" alt="logo-rosanix" />
           </Link>
         </div>
 
@@ -51,7 +51,7 @@ export default function Login() {
             { max: 100, message: "No puede sobrepasar los 100 caracteres" },
           ]}
         >
-          <Input prefix={<UserOutlined />} placeholder="correo@email.com" />
+          <Input prefix={<UserOutlined />} placeholder="correo@email.com" className="rounded-2xl text-gray-500 p-2"/>
         </Form.Item>
 
         <Form.Item
@@ -67,14 +67,15 @@ export default function Login() {
           <Input.Password
             prefix={<LockOutlined />}
             placeholder="thebestpassword123"
+            className="rounded-2xl text-gray-500 p-2"
           />
         </Form.Item>
 
         <Form.Item>
           <div className="flex justify-between items-center">
-            <Checkbox className="select-none">Recuérdame</Checkbox>
+            <Checkbox className="select-none font-[Nunito]">Recuérdame</Checkbox>
             <div className="hover:scale-105 duration-100">
-              <Link to="/forgot-password">Olvidé la contraseña</Link>
+              <Link to="/forgot-password" className="font-[Nunito]">Olvidé la contraseña</Link>
             </div>
           </div>
         </Form.Item>
@@ -84,7 +85,7 @@ export default function Login() {
         </Form.Item>
 
         <Form.Item className="self-center hover:scale-105 duration-100">
-          <Link to="/register">Aún no tenés una cuenta?</Link>
+          <Link to="/register" className="font-[Nunito]">¿Aún no tenés una cuenta? Regístrate</Link>
         </Form.Item>
       </Form>
 
