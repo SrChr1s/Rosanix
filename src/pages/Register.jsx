@@ -123,7 +123,7 @@ export default function Register() {
               className="rounded-2xl text-gray-500 p-2"
             />
           </Form.Item>
-          <Form.Item className="self-center mt-5">
+          <Form.Item className="flex justify-center mt-5">
             <Button form noaction text="Siguiente" onclick={handleNext} />
           </Form.Item>
         </div>
@@ -172,7 +172,7 @@ export default function Register() {
               className="rounded-2xl text-gray-500 p-2"
             />
           </Form.Item>
-          <Form.Item className="self-center mt-5">
+          <Form.Item className="flex justify-center mt-5">
             <Button form text="Registrarse" />
           </Form.Item>
         </div>
