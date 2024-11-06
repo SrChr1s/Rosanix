@@ -2,7 +2,7 @@ import React from "react";
 
 export default function NotFound() {
   return (
-    <div className="bg-gradient-to-b from-[#93bff1] to-[#d6cef1] h-screen relative overflow-hidden flex flex-col items-center justify-center">
+    <div className="bg-gradient-to-b from-[#698eb8] to-[#d6cef1] h-screen relative overflow-hidden flex flex-col items-center justify-center">
       <div className="absolute bottom-0 left-0 h-[360px] w-[900px] sm:w-full sm:h-auto overflow-hidden flex">
         <img
           src="/Nube1.png"
