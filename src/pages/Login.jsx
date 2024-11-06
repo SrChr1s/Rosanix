@@ -87,11 +87,11 @@ export default function Login() {
 
         <Form.Item>
           <div className="flex justify-between items-center">
-            <Checkbox className="select-none font-[Nunito]">
+            <Checkbox className="select-none font-[Nunito] text-xs">
               Recuérdame
             </Checkbox>
             <div className="hover:scale-105 duration-100">
-              <Link to="/forgot-password" className="font-[Nunito]">
+              <Link to="/forgot-password" className="font-[Nunito] text-xs">
                 Olvidé la contraseña
               </Link>
             </div>
@@ -104,7 +104,7 @@ export default function Login() {
 
         <Form.Item className="self-center hover:scale-105 duration-100">
           <Link to="/register" className="font-[Nunito]">
-            ¿Aún no tenés una cuenta? Regístrate
+            ¿Aún no tenés una cuenta?
           </Link>
         </Form.Item>
       </Form>
