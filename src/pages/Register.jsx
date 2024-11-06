@@ -65,7 +65,7 @@ export default function Register() {
   };
 
   return (
-    <div className="h-dvh flex justify-center items-center  bg-gradient-to-br from-[#9fcbf5] to-[#d3bbf3]">
+    <div className="h-dvh flex justify-center items-center  bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4]">
       <Form
         name="register"
         className="flex flex-col sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"

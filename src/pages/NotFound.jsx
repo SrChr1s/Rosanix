@@ -2,6 +2,6 @@ import React from "react";
 
 export default function NotFound() {
   return (
-    <div className="bg-gradient-to-b from-[#89b3da] to-[#e2bff0] h-screen">NotFound</div>
+    <div className=" bg-gradient-to-br from-[#a4caf5] to-[#d9d0f8] h-screen">NotFound</div>
   );
 }
