@@ -70,7 +70,7 @@ export default function Register() {
 
   return (
     <div
-      className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')]"
+      className="h-dvh flex justify-center items-center bg-[url('/background.png')] bg-cover bg-center bg-fixed"
       onDragStart={(e) => e.preventDefault()}
     >
       <Form

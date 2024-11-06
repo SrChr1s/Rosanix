@@ -6,7 +6,7 @@ const { Header, Content, Footer } = Layout;
 export default function Landing() {
   return (
     <Layout
-      className="relative min-h-screen bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')] flex flex-col overflow-hidden"
+      className="relative min-h-screen bg-[url('/background.png')] bg-cover bg-center bg-fixed  flex flex-col overflow-hidden"
       onDragStart={(e) => e.preventDefault()}
     >
       {/* Single animated pink star in various positions */}

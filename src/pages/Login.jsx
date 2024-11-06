@@ -52,7 +52,7 @@ export default function Login() {
 
   return (
     <div
-      className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')] select-none"
+      className="h-dvh flex justify-center items-center bg-[url('/background.png')] bg-cover bg-center bg-fixed select-none"
       onDragStart={(e) => e.preventDefault()}
     >
       <Form
