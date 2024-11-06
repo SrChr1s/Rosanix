@@ -15,6 +15,19 @@ export default function Login() {
     setLoading(true);
     try {
       await loginRequest(values);
+
+      setLoading(false);
+      withReactContent(Swal)
+        .fire({
+          icon: "success",
+          title: "Éxito!",
+          text: "Has iniciado sesión correctamente",
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#e299b6",
+        })
+        .then(() => {
+          <Redirect to="/home" />;
+        });
     } catch (error) {
       if (error.code == "ERR_NETWORK") {
         setLoading(false);
@@ -23,6 +36,7 @@ export default function Login() {
           title: "Ups!",
           text: "Algo no está funcionando en nuestros servidores, espera un poco antes de volver a intentar",
           confirmButtonText: "Aceptar",
+          confirmButtonColor: "#e299b6",
         });
       }
       setLoading(false);
@@ -31,12 +45,16 @@ export default function Login() {
         title: "Ups!",
         text: error.response.data,
         confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
       });
     }
   };
 
   return (
-    <div className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')]">
+    <div
+      className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')] select-none"
+      onDragStart={(e) => e.preventDefault()}
+    >
       <Form
         name="login"
         className="flex flex-col  sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"

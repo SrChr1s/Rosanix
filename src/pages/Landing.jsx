@@ -5,7 +5,10 @@ const { Header, Content, Footer } = Layout;
 
 export default function Landing() {
   return (
-    <Layout className="relative min-h-screen bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')] flex flex-col overflow-hidden">
+    <Layout
+      className="relative min-h-screen bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')] flex flex-col overflow-hidden"
+      onDragStart={(e) => e.preventDefault()}
+    >
       {/* Single animated pink star in various positions */}
       <img
         src="/star1.png"
@@ -24,7 +27,7 @@ export default function Landing() {
       />
 
       {/* Main content */}
-      <Header className="flex justify-between items-center px-4 sm:px-8 lg:px-12 min-h-20 bg-transparent font-[Roboto]">
+      <Header className="flex justify-between items-center px-4 sm:px-8 lg:px-12 min-h-20 bg-transparent font-[Roboto] select-none">
         <div className="logo w-16 drop-shadow-sm sm:hidden">
           <Link to="/">
             <img src="/logo-rosanix.png" alt="logo" />
@@ -45,7 +48,7 @@ export default function Landing() {
         </div>
       </Header>
 
-      <Content className="flex-grow flex justify-center items-center py-4 sm:py-6 px-4 overflow-y-auto">
+      <Content className="flex-grow flex justify-center items-center py-4 sm:py-6 px-4 overflow-y-auto select-none">
         <div className="flex flex-col w-full max-w-xs sm:max-w-md lg:max-w-xl p-6 sm:p-10 md:p-12 bg-white/25 rounded-3xl text-center">
           <h1 className="text-[#456297] text-5xl sm:text-6xl md:text-7xl font-[Bebas] mt-4 sm:mt-8 mb-4 break-words leading-snug">
             Toma el control de tu día, tarea a tarea

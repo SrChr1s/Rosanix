@@ -22,6 +22,7 @@ export default function Register() {
         title: "Ups!",
         text: "Debes completar todos los campos",
         confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
       });
     }
 
@@ -40,6 +41,7 @@ export default function Register() {
           title: "Éxito!",
           text: "Su cuenta ha sido registrada con éxito",
           confirmButtonText: "Aceptar",
+          confirmButtonColor: "#e299b6",
         })
         .then(() => {
           <Redirect to="/home" />;
@@ -52,6 +54,7 @@ export default function Register() {
           title: "Ups!",
           text: "Algo no está funcionando en nuestros servidores, espera un poco antes de volver a intentar",
           confirmButtonText: "Aceptar",
+          confirmButtonColor: "#e299b6",
         });
       }
       setLoading(false);
@@ -60,12 +63,16 @@ export default function Register() {
         title: "Ups!",
         text: error.response.data,
         confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
       });
     }
   };
 
   return (
-    <div className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')]">
+    <div
+      className="h-dvh flex justify-center items-center bg-gradient-to-br from-[#a4caf5] to-[#c3c1f4] sm:bg-[url('/background.png')]"
+      onDragStart={(e) => e.preventDefault()}
+    >
       <Form
         name="register"
         className="flex flex-col sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"
