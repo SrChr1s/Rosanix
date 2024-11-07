@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Redirect } from "wouter";
+import { Link } from "wouter";
 import { registerRequest } from "../api/auth";
 import { Form, Input, Spin } from "antd";
 import { LoadingOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
@@ -12,12 +12,14 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [steps, setSteps] = useState(0);
 
+  const MySwal = withReactContent(Swal);
+
   const handleNext = () => {
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
 
-    if (name == "" || email == "") {
-      return withReactContent(Swal).fire({
+    if (name === "" || email === "") {
+      return MySwal.fire({
         icon: "error",
         title: "Ups!",
         text: "Debes completar todos los campos",
@@ -35,30 +37,27 @@ export default function Register() {
       await registerRequest(values);
 
       setLoading(false);
-      withReactContent(Swal)
-        .fire({
-          icon: "success",
-          title: "Éxito!",
-          text: "Su cuenta ha sido registrada con éxito",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        })
-        .then(() => {
-          <Redirect to="/home" />;
-        });
+      MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Su cuenta ha sido registrada con éxito",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => {
+        window.location.replace("/home");
+      });
     } catch (error) {
-      if (error.code == "ERR_NETWORK") {
-        setLoading(false);
-        return withReactContent(Swal).fire({
+      setLoading(false);
+      if (error.code === "ERR_NETWORK") {
+        return MySwal.fire({
           icon: "error",
           title: "Ups!",
-          text: "Algo no está funcionando en nuestros servidores, espera un poco antes de volver a intentar",
+          text: "Error en el servidor, intenta más tarde.",
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#e299b6",
         });
       }
-      setLoading(false);
-      withReactContent(Swal).fire({
+      MySwal.fire({
         icon: "error",
         title: "Ups!",
         text: error.response.data,
@@ -86,102 +85,100 @@ export default function Register() {
           </Link>
         </div>
 
-        <div className={`${steps == 0 ? "" : "hidden"}`}>
-          <Form.Item
-            hasFeedback
-            name="name"
-            label="Nombre"
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: "Este campo es requerido" },
-              { min: 3, message: "Debe tener al menos 3 caracteres" },
-              { max: 25, message: "No puede sobrepasar los 25 caracteres" },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="John Doe"
-              id="name"
-              className="rounded-2xl text-gray-500 p-2 w-full"
-            />
-          </Form.Item>
-          <Form.Item
-            hasFeedback
-            name="email"
-            label="Email"
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: "Este campo es requerido" },
-              { type: "email", message: "No es un email válido" },
-              { max: 100, message: "No puede sobrepasar los 100 caracteres" },
-            ]}
-          >
-            <Input
-              prefix={<FaRegEnvelope />}
-              placeholder="correo@email.com"
-              id="email"
-              className="rounded-2xl text-gray-500 p-2"
-            />
-          </Form.Item>
-          <Form.Item className="flex justify-center mt-5">
-            <Button form noaction text="Siguiente" onclick={handleNext} />
-          </Form.Item>
-        </div>
+        {steps === 0 && (
+          <>
+            <Form.Item
+              name="name"
+              label="Nombre"
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { min: 3, message: "Debe tener al menos 3 caracteres" },
+                { max: 25, message: "No puede sobrepasar los 25 caracteres" },
+              ]}
+            >
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="John Doe"
+                id="name"
+                className="rounded-2xl text-gray-500 p-2 w-full"
+              />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { type: "email", message: "No es un email válido" },
+                { max: 100, message: "No puede sobrepasar los 100 caracteres" },
+              ]}
+            >
+              <Input
+                prefix={<FaRegEnvelope />}
+                placeholder="correo@email.com"
+                id="email"
+                className="rounded-2xl text-gray-500 p-2"
+              />
+            </Form.Item>
+            <Form.Item className="flex justify-center w-full mt-5">
+              <Button form noaction text="Siguiente" onclick={handleNext} />
+            </Form.Item>
+          </>
+        )}
 
-        <div className={`${steps == 1 ? "" : "hidden"}`}>
-          <Form.Item
-            hasFeedback
-            name="passw"
-            label="Contraseña"
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: "Este campo es requerido" },
-              { min: 8, message: "Debe tener al menos 8 caracteres" },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="thebestpassword123"
-              id="passw"
-              className="rounded-2xl text-gray-500 p-2 w-full"
-            />
-          </Form.Item>
-          <Form.Item
-            hasFeedback
-            name="cpassw"
-            label="Confirme su contraseña"
-            dependencies={["passw"]}
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: "Este campo es requerido" },
-              { min: 8, message: "Debe tener al menos 8 caracteres" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("passw") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error("Su contraseña no coincide"));
-                },
-              }),
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="thebestpassword123"
-              id="cpassw"
-              className="rounded-2xl text-gray-500 p-2 w-full"
-            />
-          </Form.Item>
-          <Form.Item className="flex justify-center mt-5">
-            <Button form text="Registrarse" />
-          </Form.Item>
-        </div>
+        {steps === 1 && (
+          <>
+            <Form.Item
+              name="passw"
+              label="Contraseña"
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { min: 8, message: "Debe tener al menos 8 caracteres" },
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="thebestpassword123"
+                id="passw"
+                className="rounded-2xl text-gray-500 p-2 w-full"
+              />
+            </Form.Item>
+            <Form.Item
+              name="cpassw"
+              label="Confirme su contraseña"
+              dependencies={["passw"]}
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { min: 8, message: "Debe tener al menos 8 caracteres" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("passw") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("Su contraseña no coincide")
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="thebestpassword123"
+                id="cpassw"
+                className="rounded-2xl text-gray-500 p-2 w-full"
+              />
+            </Form.Item>
+            <Form.Item className="flex justify-center mt-5">
+              <Button form text="Registrarse" />
+            </Form.Item>
+          </>
+        )}
 
         <Form.Item className="self-center hover:scale-105 duration-100">
           <Link
-            to={`${steps == 0 ? "/login" : ""}`}
+            to={`${steps === 0 ? "/login" : ""}`}
             className="flex items-center font-[Nunito]"
-            onClick={steps == 1 ? () => setSteps(0) : null}
+            onClick={steps === 1 ? () => setSteps(0) : null}
           >
             <FaArrowLeft className="mr-2" />
             Volver
@@ -191,15 +188,8 @@ export default function Register() {
 
       <Spin
         spinning={loading}
-        fullscreen
         indicator={
-          <LoadingOutlined
-            spin
-            style={{
-              fontSize: 80,
-              color: "#FFD6FF",
-            }}
-          />
+          <LoadingOutlined spin style={{ fontSize: 80, color: "#FFD6FF" }} />
         }
       />
     </div>
