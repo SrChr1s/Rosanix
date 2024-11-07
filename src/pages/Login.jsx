@@ -52,12 +52,12 @@ export default function Login() {
 
   return (
     <div
-      className="h-dvh flex justify-center items-center bg-[url('/background.png')] bg-cover bg-center bg-fixed select-none"
+      className="h-screen flex justify-center items-center bg-[url('/background.png')] bg-cover bg-center bg-fixed select-none overflow-hidden"
       onDragStart={(e) => e.preventDefault()}
     >
       <Form
         name="login"
-        className="flex flex-col  sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"
+        className="flex flex-col sm:max-w-[400px] lg:max-w-[500px] px-4 sm:px-20 pt-10 rounded-xl sm:bg-white/35"
         layout="vertical"
         autoComplete="off"
         onFinish={handleSend}
@@ -99,7 +99,7 @@ export default function Login() {
           <Input.Password
             prefix={<LockOutlined />}
             placeholder="thebestpassword123"
-            className="rounded-2xl text-gray-500 p-2"
+            className="rounded-2xl text-gray-500 p-2" 
           />
         </Form.Item>
 
