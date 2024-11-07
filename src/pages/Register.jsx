@@ -70,7 +70,7 @@ export default function Register() {
 
   return (
     <div
-      className="h-dvh flex justify-center items-center bg-[url('/background.png')] bg-cover bg-center bg-fixed"
+      className="h-screen flex justify-center items-center bg-[url('/background.png')] bg-cover bg-center bg-fixed overflow-hidden"
       onDragStart={(e) => e.preventDefault()}
     >
       <Form
@@ -80,7 +80,7 @@ export default function Register() {
         autoComplete="off"
         onFinish={handleSend}
       >
-        <div className="self-center w-72 mb-5">
+        <div className="self-center w-60 sm:w-72 mb-5">
           <Link to="/">
             <img src="/rosanix-logo.png" alt="logo-rosanix" />
           </Link>
@@ -102,7 +102,7 @@ export default function Register() {
               prefix={<UserOutlined />}
               placeholder="John Doe"
               id="name"
-              className="rounded-2xl text-gray-500 p-2"
+              className="rounded-2xl text-gray-500 p-2 w-full"
             />
           </Form.Item>
           <Form.Item
@@ -143,7 +143,7 @@ export default function Register() {
               prefix={<LockOutlined />}
               placeholder="thebestpassword123"
               id="passw"
-              className="rounded-2xl text-gray-500 p-2"
+              className="rounded-2xl text-gray-500 p-2 w-full"
             />
           </Form.Item>
           <Form.Item
@@ -169,7 +169,7 @@ export default function Register() {
               prefix={<LockOutlined />}
               placeholder="thebestpassword123"
               id="cpassw"
-              className="rounded-2xl text-gray-500 p-2"
+              className="rounded-2xl text-gray-500 p-2 w-full"
             />
           </Form.Item>
           <Form.Item className="flex justify-center mt-5">

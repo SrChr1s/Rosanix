@@ -62,7 +62,7 @@ export default function Login() {
         autoComplete="off"
         onFinish={handleSend}
       >
-        <div className="self-center w-72 mb-5">
+        <div className="self-center w-60 sm:w-72 mb-5 ">
           <Link to="/">
             <img src="/rosanix-logo.png" alt="logo-rosanix" />
           </Link>
