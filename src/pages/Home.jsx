@@ -1,18 +1,16 @@
 import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { logoutRequest } from "../api/auth";
-import { useLocation } from "wouter";
 import { ConfigProvider, Layout, Menu } from "antd";
 const { Header, Content, Sider } = Layout;
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
-  const [location, setLocation] = useLocation();
 
   const handleMenuClick = async (e) => {
     if (e.key == 3) {
       await logoutRequest();
-      setLocation("/");
+      window.location = "/";
     }
   };
 
@@ -60,6 +58,7 @@ export default function Home() {
                 key: 1,
                 icon: <FaPlus />,
                 label: "Nueva Tarea",
+                className: "drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
@@ -70,6 +69,7 @@ export default function Home() {
                 key: 2,
                 icon: <FaIdCard />,
                 label: "Mis Datos",
+                className: "drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
@@ -79,6 +79,7 @@ export default function Home() {
                 key: 3,
                 icon: <FaKey />,
                 label: "Cerrar Sesión",
+                className: "drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
@@ -87,10 +88,12 @@ export default function Home() {
             ]}
           />
         </Sider>
-        <Header className="flex items-center w-dvw pl-5 text-white bg-[#a4caf5]">
-          <h1 className="text-3xl">Welcome, user!</h1>
-        </Header>
-        <Content></Content>
+        <Layout>
+          <Header className="flex items-center w-dvw pl-5 text-white bg-[#a4caf5]">
+            <h1 className="text-3xl">Welcome, user!</h1>
+          </Header>
+          <Content></Content>
+        </Layout>
       </Layout>
     </ConfigProvider>
   );

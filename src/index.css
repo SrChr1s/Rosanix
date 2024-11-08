@@ -13,8 +13,11 @@ body {
 }
 
 .ant-layout-sider-children {
-  display: flex;
-  flex-direction: column;
+  @apply flex flex-col;
+}
+
+.ant-layout-sider-trigger > * {
+  @apply drop-shadow-sm;
 }
 
 @font-face {
