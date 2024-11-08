@@ -105,11 +105,11 @@ export default function Login() {
 
         <Form.Item>
           <div className="flex justify-between items-center">
-            <Checkbox className="select-none font-[Nunito] text-xs">
+            <Checkbox className="select-none font-[Nunito] text-sm">
               Recuérdame
             </Checkbox>
             <div className="hover:scale-105 duration-100">
-              <Link to="/forgot-password" className="font-[Nunito] text-xs">
+              <Link to="/forgot-password" className="font-[Nunito] text-sm">
                 Olvidé la contraseña
               </Link>
             </div>

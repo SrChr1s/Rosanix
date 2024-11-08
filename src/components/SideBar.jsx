@@ -6,11 +6,10 @@ const SideBar = ({ menus = [], open, setOpen }) => {
   return (
     <section className="flex gap-6">
       <div
-        className={`bg-[#3e77e9] sm:min-h-[90vh] min-h-screen ${
+        className={`bg-[#d884a6] sm:min-h-[90vh] min-h-screen ${
           open ? "w-72" : "w-16"
-        } duration-500 text-gray-100 px-4`}
+        } duration-500 text-white px-4`}
       >
-
         <div className="py-3 flex justify-end">
           <HiMenuAlt3
             size={26}
@@ -18,7 +17,19 @@ const SideBar = ({ menus = [], open, setOpen }) => {
             onClick={() => setOpen(!open)}
           />
         </div>
-        
+
+        <div className="flex justify-center py-4">
+          <img
+            src={open ? "/main-logo.png" : "/logo-rosanix.png"}
+            alt="logo"
+            className="transition-all duration-500"
+            style={{
+              width: open ? "190px" : "35px", 
+              height: open ? "auto" : "26px", 
+            }}
+          />
+        </div>
+
         <div className="mt-4 flex flex-col gap-4 relative">
           {menus.length > 0 ? (
             menus.map((menu, i) => (
@@ -26,7 +37,7 @@ const SideBar = ({ menus = [], open, setOpen }) => {
                 <a
                   className={`${
                     menu.margin && "mt-5"
-                  } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-[#141f57] rounded-md`}
+                  } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-[#b16080] rounded-md`}
                 >
                   <div>{React.createElement(menu.icon, { size: "20" })}</div>
                   <h2
@@ -42,7 +53,7 @@ const SideBar = ({ menus = [], open, setOpen }) => {
                   <h2
                     className={`${
                       open && "hidden"
-                    } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit`}
+                    } absolute left-48 bg-white font-semibold whitespace-pre text-[#d884a6] rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit`}
                   >
                     {menu.name}
                   </h2>

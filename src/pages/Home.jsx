@@ -34,12 +34,11 @@ export default function Home() {
       <SideBar menus={menus} open={isOpen} setOpen={setIsOpen} />
 
       <div className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between p-4 bg-blue-600 text-white">
-          <h1 className="text-lg">Dashboard</h1>
+        <header className="flex items-center justify-between p-4 bg-white/45 text-white">
+          <h1 className="text-lg font-[Nunito]">Dashboard</h1>
         </header>
 
         <main className="p-4">
-          {/* aca iria el contenido de la página */}
           <h2>Bienvenido al Dashboard</h2>
           <p>Aquí puedes gestionar tus tareas y tu perfil.</p>
         </main>
