@@ -1,48 +1,84 @@
-import React, { useState } from "react";
-import { FaIdCard, FaPlus, FaUser, FaKey } from "react-icons/fa6";
-import SideBar from "../components/SideBar";
+import {
+  FaIdCard,
+  FaIndent,
+  FaKey,
+  FaOutdent,
+  FaPlus,
+  FaUser,
+} from "react-icons/fa6";
+import { useState } from "react";
+import { logoutRequest } from "../api/auth";
+import { useLocation } from "wouter";
+import { Layout, Menu, Button } from "antd";
+const { Header, Content, Sider } = Layout;
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
+  const [location, setLocation] = useLocation();
 
-  const menus = [
-    {
-      name: "Nueva Tarea",
-      link: "/nueva-tarea",
-      icon: FaPlus,
-    },
-    {
-      name: "Mi Perfil",
-      link: "/mi-perfil",
-      icon: FaUser,
-    },
-    {
-      name: "Mis Datos",
-      link: "/mis-datos",
-      icon: FaIdCard,
-      margin: true,
-    },
-    {
-      name: "Cerrar Sesión",
-      link: "/cerrar-sesion",
-      icon: FaKey,
-    },
-  ];
+  const handleMenuClick = async (e) => {
+    if (e.key == 3) {
+      await logoutRequest();
+      setLocation("/");
+    }
+  };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <SideBar menus={menus} open={isOpen} setOpen={setIsOpen} />
-
-      <div className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between p-4 bg-white/45 text-white">
-          <h1 className="text-lg font-[Nunito]">Dashboard</h1>
-        </header>
-
-        <main className="p-4">
-          <h2>Bienvenido al Dashboard</h2>
-          <p>Aquí puedes gestionar tus tareas y tu perfil.</p>
-        </main>
-      </div>
-    </div>
+    <Layout className="overflow-hidden">
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={isOpen}
+        className="h-dvh *:flex *:flex-col"
+      >
+        <img
+          src="/logo-rosanix.png"
+          alt="logo"
+          className="w-16 mt-2 mb-10 self-center"
+        />
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectable={false}
+          onClick={handleMenuClick}
+          items={[
+            {
+              key: 1,
+              icon: <FaPlus />,
+              label: "Nueva Tarea",
+            },
+            {
+              key: "sub1",
+              icon: <FaUser />,
+              label: "Mi Perfil",
+              type: "submenu",
+              children: [
+                {
+                  key: 2,
+                  icon: <FaIdCard />,
+                  label: "Mis Datos",
+                },
+                {
+                  key: 3,
+                  icon: <FaKey />,
+                  label: "Cerrar Sesión",
+                },
+              ],
+            },
+          ]}
+        />
+      </Sider>
+      <Layout>
+        <Header className="flex items-center w-dvw p-0">
+          <Button
+            type="text"
+            icon={isOpen ? <FaIndent /> : <FaOutdent />}
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-2xl text-white"
+          />
+        </Header>
+        <Content></Content>
+      </Layout>
+    </Layout>
   );
 }
