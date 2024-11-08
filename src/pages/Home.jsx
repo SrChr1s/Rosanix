@@ -33,13 +33,13 @@ export default function Home() {
           width={230}
         >
           {isOpen && (
-            <div className="logo w-14 mt-3 mb-10 drop-shadow-sm self-center">
+            <div className="logo w-12 sm:w-14 mt-3 mb-10 drop-shadow-sm self-center">
               <img src="/logo-rosanix.png" alt="logo" />
             </div>
           )}
 
           {!isOpen && (
-            <div className="logo w-48 mt-2 mb-10 drop-shadow-sm self-center">
+            <div className="logo w-44 sm:w-48 mt-2 mb-10 drop-shadow-sm self-center">
               <img src="/main-logo.png" alt="logo" />
             </div>
           )}
@@ -59,7 +59,7 @@ export default function Home() {
                 key: 1,
                 icon: <FaPlus />,
                 label: "Nueva Tarea",
-                className: "drop-shadow-sm",
+                className: "text-sm drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
@@ -70,7 +70,7 @@ export default function Home() {
                 key: 2,
                 icon: <FaIdCard />,
                 label: "Mis Datos",
-                className: "drop-shadow-sm",
+                className: "text-sm drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
@@ -80,7 +80,7 @@ export default function Home() {
                 key: 3,
                 icon: <FaKey />,
                 label: "Cerrar Sesión",
-                className: "drop-shadow-sm",
+                className: "text-sm drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
@@ -91,7 +91,7 @@ export default function Home() {
         </Sider>
         <Layout>
           <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
-            <h1 className="text-3xl font-[Nunito]">Welcome, user!</h1>
+            <h1 className="text-xl sm:text-3xl font-[Nunito]">Welcome, user!</h1>
           </Header>
           <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
           <Footer className="bg-[#bbacdf]"></Footer>
