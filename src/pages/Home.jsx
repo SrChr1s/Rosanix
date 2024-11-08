@@ -19,7 +19,7 @@ export default function Home() {
       theme={{
         components: {
           Layout: {
-            triggerBg: "#c3c1f460",
+            triggerBg: "#84799b3e",
           },
         },
       }}
@@ -29,7 +29,7 @@ export default function Home() {
           collapsible
           collapsed={isOpen}
           onCollapse={() => setIsOpen(!isOpen)}
-          className="h-dvh bg-[#a4caf5]"
+          className="h-dvh bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"
           width={230}
         >
           <div
@@ -46,7 +46,7 @@ export default function Home() {
             <img src="/main-logo.png" alt="logo" />
           </div>
           <Menu
-            className={`bg-[#c3c1f460] ${
+            className={`bg-[#84799b28] ${
               !isOpen ? "rounded-3xl w-10/12 self-center" : ""
             } max-sm:text-xl justify-items-center px-2`}
             mode="inline"
@@ -89,8 +89,8 @@ export default function Home() {
           />
         </Sider>
         <Layout>
-          <Header className="flex items-center w-dvw pl-5 text-white bg-[#a4caf5]">
-            <h1 className="text-3xl">Welcome, user!</h1>
+          <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
+            <h1 className="text-3xl font-[Nunito]">Welcome, user!</h1>
           </Header>
           <Content></Content>
         </Layout>
