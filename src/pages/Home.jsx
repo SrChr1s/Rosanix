@@ -11,6 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [newTask, setNewTask] = useState(false);
   const [myData, setMyData] = useState(false);
+  const [logoutSure, setLogoutSure] = useState(false);
 
   const { user, logout } = useAuth();
 
@@ -30,15 +31,23 @@ export default function Home() {
     }
 
     if (e.key == 3) {
-      await logout();
+      setLogoutSure(true);
       setLoading(false);
-      navigate("/");
     }
+  };
+
+  const handleLogout = async () => {
+    setLogoutSure(false);
+    setLoading(true);
+    await logout();
+    setLoading(false);
+    navigate("/");
   };
 
   const closeModal = () => {
     setNewTask(false);
     setMyData(false);
+    setLogoutSure(false);
   };
 
   return (
@@ -142,8 +151,9 @@ export default function Home() {
 
       <Modal
         title="Nueva Tarea"
+        centered
         open={newTask}
-        onCancel={closeModal}
+        styles={{ mask: { backdropFilter: "blur(10px)" } }}
         footer={[
           <Button key="cancel" onClick={closeModal}>
             Cancelar
@@ -158,8 +168,9 @@ export default function Home() {
 
       <Modal
         title="Mis Datos"
+        centered
         open={myData}
-        onCancel={closeModal}
+        styles={{ mask: { backdropFilter: "blur(10px)" } }}
         footer={[
           <Button key="ok" type="primary" onClick={closeModal}>
             OK
@@ -167,6 +178,23 @@ export default function Home() {
         ]}
       >
         <p>Datos del usuario</p>
+      </Modal>
+
+      <Modal
+        title="Cerrar sesión"
+        centered
+        open={logoutSure}
+        styles={{ mask: { backdropFilter: "blur(10px)" } }}
+        footer={[
+          <Button key="cancel" onClick={closeModal}>
+            Cancelar
+          </Button>,
+          <Button key="ok" type="primary" onClick={handleLogout}>
+            Aceptar
+          </Button>,
+        ]}
+      >
+        <p>Estás seguro de querer cerrar sesión?</p>
       </Modal>
     </ConfigProvider>
   );
