@@ -2,7 +2,7 @@ import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { logoutRequest } from "../api/auth";
-import { ConfigProvider, Layout, Menu, Spin } from "antd";
+import { ConfigProvider, Layout, Menu, Spin, Modal, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -10,6 +10,8 @@ export default function Home({ user }) {
   const [isOpen, setIsOpen] = useState(true);
   const [logout, setLogout] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [newTask, setNewTask] = useState(false);
+  const [myData, setMyData] = useState(false);
 
   const handleMenuClick = async (e) => {
     setLoading(true);
@@ -17,7 +19,18 @@ export default function Home({ user }) {
       await logoutRequest();
       setLoading(false);
       setLogout(true);
+    } else if (e.key == 1) {
+      setNewTask(true); 
+      setLoading(false);
+    } else if (e.key == 2) {
+      setMyData(true); 
+      setLoading(false);
     }
+  };
+
+  const closeModal = () => {
+    setNewTask(false);
+    setMyData(false);
   };
 
   // if (!user) {
@@ -123,6 +136,39 @@ export default function Home({ user }) {
         }
       />
       {logout && <Navigate to="/" replace />}
+
+      <Modal
+        title="Nueva Tarea"
+        visible={newTask}
+        onCancel={closeModal}
+        footer={[
+          <Button key="cancel" onClick={closeModal}>
+            Cancelar
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => null}
+          >
+            Crear
+          </Button>,
+        ]}
+      >
+        <p>Campos para la nueva tarea</p>
+      </Modal>
+
+      <Modal
+        title="Mis Datos"
+        visible={myData}
+        onCancel={closeModal}
+        footer={[
+          <Button key="ok" type="primary" onClick={closeModal}>
+            OK
+          </Button>,
+        ]}
+      >
+        <p>Datos del usuario</p>
+      </Modal>
     </ConfigProvider>
   );
 }
