@@ -1,18 +1,28 @@
 import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { logoutRequest } from "../api/auth";
-import { ConfigProvider, Layout, Menu } from "antd";
+import { ConfigProvider, Layout, Menu, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 
-export default function Home() {
+export default function Home({ user }) {
   const [isOpen, setIsOpen] = useState(true);
+  const [logout, setLogout] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleMenuClick = async (e) => {
+    setLoading(true);
     if (e.key == 3) {
       await logoutRequest();
-      window.location = "/";
+      setLoading(false);
+      setLogout(true);
     }
   };
+
+  // if (!user) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return (
     <ConfigProvider
@@ -91,12 +101,28 @@ export default function Home() {
         </Sider>
         <Layout>
           <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
-            <h1 className="text-xl sm:text-3xl font-[Nunito]">Welcome, user!</h1>
+            <h1 className="text-xl sm:text-3xl font-[Nunito]">
+              Welcome, user!
+            </h1>
           </Header>
           <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
           <Footer className="bg-[#bbacdf]"></Footer>
         </Layout>
       </Layout>
+      <Spin
+        spinning={loading}
+        fullscreen
+        indicator={
+          <LoadingOutlined
+            spin
+            style={{
+              fontSize: 80,
+              color: "#FFD6FF",
+            }}
+          />
+        }
+      />
+      {logout && <Navigate to="/" replace />}
     </ConfigProvider>
   );
 }

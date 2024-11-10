@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, Navigate } from "react-router-dom";
 import { loginRequest } from "../api/auth";
 import { Form, Input, Checkbox, Spin } from "antd";
 import { LoadingOutlined, LockOutlined } from "@ant-design/icons";
@@ -10,6 +10,7 @@ import withReactContent from "sweetalert2-react-content";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const [successLogin, setSuccessLogin] = useState(false);
 
   const handleSend = async (values) => {
     setLoading(true);
@@ -26,7 +27,7 @@ export default function Login() {
           confirmButtonColor: "#e299b6",
         })
         .then(() => {
-          <Redirect to="/home" />;
+          setSuccessLogin(true);
         });
     } catch (error) {
       if (error.code == "ERR_NETWORK") {
@@ -72,7 +73,7 @@ export default function Login() {
           hasFeedback
           name="email"
           label="Email"
-          validateTrigger="onBlur"
+          validateFirst
           rules={[
             { required: true, message: "Este campo es requerido" },
             { type: "email", message: "No es un email válido" },
@@ -99,7 +100,7 @@ export default function Login() {
           <Input.Password
             prefix={<LockOutlined />}
             placeholder="thebestpassword123"
-            className="rounded-2xl text-gray-500 p-2" 
+            className="rounded-2xl text-gray-500 p-2"
           />
         </Form.Item>
 
@@ -140,6 +141,7 @@ export default function Login() {
           />
         }
       />
+      {successLogin && <Navigate to="/home" replace />}
     </div>
   );
 }

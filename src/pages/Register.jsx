@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { registerRequest } from "../api/auth";
 import { Form, Input, Spin } from "antd";
 import { LoadingOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
@@ -11,6 +11,7 @@ import withReactContent from "sweetalert2-react-content";
 export default function Register() {
   const [loading, setLoading] = useState(false);
   const [steps, setSteps] = useState(0);
+  const [successRegister, setSuccessRegister] = useState(false);
 
   const MySwal = withReactContent(Swal);
 
@@ -44,7 +45,7 @@ export default function Register() {
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
       }).then(() => {
-        window.location.replace("/home");
+        setSuccessRegister(true);
       });
     } catch (error) {
       setLoading(false);
@@ -188,10 +189,12 @@ export default function Register() {
 
       <Spin
         spinning={loading}
+        fullscreen
         indicator={
           <LoadingOutlined spin style={{ fontSize: 80, color: "#FFD6FF" }} />
         }
       />
+      {successRegister && <Navigate to="/home" replace />}
     </div>
   );
 }

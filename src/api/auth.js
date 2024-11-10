@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://192.168.5.114:4000/api";
+const API = "http://localhost:4000/api";
 
 export const loginRequest = (user) => axios.post(`${API}/login`, user);
 
