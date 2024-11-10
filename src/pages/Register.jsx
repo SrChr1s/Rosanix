@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 export default function Register() {
-  const { signup, isAuth } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -69,12 +69,6 @@ export default function Register() {
       });
     }
   };
-
-  useEffect(() => {
-    if (isAuth) {
-      navigate("/home");
-    }
-  }, [isAuth]);
 
   return (
     <div

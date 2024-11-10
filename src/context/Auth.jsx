@@ -1,5 +1,11 @@
-import { createContext, useContext, useState } from "react";
-import { registerRequest, loginRequest, logoutRequest } from "../api/auth";
+import { createContext, useContext, useEffect, useState } from "react";
+import {
+  registerRequest,
+  loginRequest,
+  logoutRequest,
+  verTokenRequest,
+} from "../api/auth";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
@@ -15,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const signup = async (user) => {
     try {
@@ -48,6 +55,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    async function checkLogin() {
+      const cookies = Cookies.get();
+      if (!cookies.access_token) {
+        setIsAuth(false);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await verTokenRequest(cookies.access_token);
+        if (!res.data) {
+          setIsAuth(false);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        setIsAuth(true);
+        setUser(res.data);
+        setLoading(false);
+      } catch (err) {
+        setIsAuth(false);
+        setUser(null);
+        setLoading(false);
+      }
+    }
+    checkLogin();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -55,6 +92,7 @@ export const AuthProvider = ({ children }) => {
         signup,
         logout,
         isAuth,
+        loading,
         errors,
         user,
       }}

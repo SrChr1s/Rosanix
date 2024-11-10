@@ -1,5 +1,5 @@
 import { useAuth } from "../context/Auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Checkbox, Spin } from "antd";
 import { LoadingOutlined, LockOutlined } from "@ant-design/icons";
@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 export default function Login() {
-  const { signin, isAuth } = useAuth();
+  const { signin } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -52,12 +52,6 @@ export default function Login() {
       });
     }
   };
-
-  useEffect(() => {
-    if (isAuth) {
-      navigate("/home");
-    }
-  }, [isAuth]);
 
   return (
     <div

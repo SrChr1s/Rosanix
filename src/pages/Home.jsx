@@ -1,5 +1,5 @@
 import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Layout, Menu, Spin, Modal, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -12,7 +12,7 @@ export default function Home() {
   const [newTask, setNewTask] = useState(false);
   const [myData, setMyData] = useState(false);
 
-  const { isAuth, user, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const navigate = useNavigate();
 
@@ -40,12 +40,6 @@ export default function Home() {
     setNewTask(false);
     setMyData(false);
   };
-
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/login");
-    }
-  }, []);
 
   return (
     <ConfigProvider
@@ -125,7 +119,7 @@ export default function Home() {
         <Layout>
           <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
             <h1 className="text-xl sm:text-3xl font-[Nunito]">
-              Bienvenido, {user ? user.name : "usuario"}!
+              Bienvenido/a, {user ? user.name : "usuario"}!
             </h1>
           </Header>
           <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
