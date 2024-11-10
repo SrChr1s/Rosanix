@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
-import { loginRequest } from "../api/auth";
+import { useAuth } from "../context/Auth";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Checkbox, Spin } from "antd";
 import { LoadingOutlined, LockOutlined } from "@ant-design/icons";
 import { FaRegEnvelope } from "react-icons/fa6";
@@ -9,47 +9,55 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 export default function Login() {
+  const { signin, isAuth } = useAuth();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
-  const [successLogin, setSuccessLogin] = useState(false);
+
+  const MySwal = withReactContent(Swal);
 
   const handleSend = async (values) => {
     setLoading(true);
-    try {
-      await loginRequest(values);
+    const res = await signin(values);
 
-      setLoading(false);
-      withReactContent(Swal)
-        .fire({
-          icon: "success",
-          title: "Éxito!",
-          text: "Has iniciado sesión correctamente",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        })
-        .then(() => {
-          setSuccessLogin(true);
-        });
-    } catch (error) {
-      if (error.code == "ERR_NETWORK") {
+    if (res) {
+      if (res.code == "ERR_NETWORK") {
         setLoading(false);
-        return withReactContent(Swal).fire({
+        return MySwal.fire({
           icon: "error",
           title: "Ups!",
-          text: "Algo no está funcionando en nuestros servidores, espera un poco antes de volver a intentar",
+          text: "Error en el servidor, intenta más tarde.",
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#e299b6",
         });
       }
       setLoading(false);
-      withReactContent(Swal).fire({
+      MySwal.fire({
         icon: "error",
         title: "Ups!",
-        text: error.response.data,
+        text: res.response.data,
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
       });
+    } else {
+      setLoading(false);
+      await MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Has iniciado sesión correctamente",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => {
+        navigate("/home");
+      });
     }
   };
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/home");
+    }
+  }, [isAuth]);
 
   return (
     <div
@@ -82,6 +90,7 @@ export default function Login() {
         >
           <Input
             prefix={<FaRegEnvelope />}
+            autoFocus
             placeholder="correo@email.com"
             className="rounded-2xl text-gray-500 p-2"
           />
@@ -141,7 +150,6 @@ export default function Login() {
           />
         }
       />
-      {successLogin && <Navigate to="/home" replace />}
     </div>
   );
 }

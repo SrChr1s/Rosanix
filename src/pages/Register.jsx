@@ -1,6 +1,6 @@
+import { useAuth } from "../context/Auth";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { registerRequest } from "../api/auth";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Spin } from "antd";
 import { LoadingOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
 import { FaArrowLeft, FaRegEnvelope } from "react-icons/fa6";
@@ -9,9 +9,11 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 export default function Register() {
+  const { signup, isAuth } = useAuth();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [steps, setSteps] = useState(0);
-  const [successRegister, setSuccessRegister] = useState(false);
 
   const MySwal = withReactContent(Swal);
 
@@ -34,22 +36,11 @@ export default function Register() {
 
   const handleSend = async (values) => {
     setLoading(true);
-    try {
-      await registerRequest(values);
+    const res = await signup(values);
 
+    if (res) {
       setLoading(false);
-      MySwal.fire({
-        icon: "success",
-        title: "Éxito!",
-        text: "Su cuenta ha sido registrada con éxito",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      }).then(() => {
-        setSuccessRegister(true);
-      });
-    } catch (error) {
-      setLoading(false);
-      if (error.code === "ERR_NETWORK") {
+      if (res.code === "ERR_NETWORK") {
         return MySwal.fire({
           icon: "error",
           title: "Ups!",
@@ -61,12 +52,29 @@ export default function Register() {
       MySwal.fire({
         icon: "error",
         title: "Ups!",
-        text: error.response.data,
+        text: res.response.data,
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
       });
+    } else {
+      setLoading(false);
+      MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Su cuenta ha sido registrada con éxito",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => {
+        navigate("/home");
+      });
     }
   };
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/home");
+    }
+  }, [isAuth]);
 
   return (
     <div
@@ -85,94 +93,93 @@ export default function Register() {
             <img src="/rosanix-logo.png" alt="logo-rosanix" />
           </Link>
         </div>
-
+        <Form.Item
+          name="name"
+          label="Nombre"
+          hidden={steps !== 0}
+          rules={[
+            { required: true, message: "Este campo es requerido" },
+            { min: 3, message: "Debe tener al menos 3 caracteres" },
+            { max: 25, message: "No puede sobrepasar los 25 caracteres" },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined />}
+            autoFocus
+            placeholder="John Doe"
+            id="name"
+            className="rounded-2xl text-gray-500 p-2 w-full"
+          />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          label="Email"
+          hidden={steps !== 0}
+          rules={[
+            { required: true, message: "Este campo es requerido" },
+            { type: "email", message: "No es un email válido" },
+            { max: 100, message: "No puede sobrepasar los 100 caracteres" },
+          ]}
+        >
+          <Input
+            prefix={<FaRegEnvelope />}
+            placeholder="correo@email.com"
+            id="email"
+            className="rounded-2xl text-gray-500 p-2"
+          />
+        </Form.Item>
         {steps === 0 && (
-          <>
-            <Form.Item
-              name="name"
-              label="Nombre"
-              rules={[
-                { required: true, message: "Este campo es requerido" },
-                { min: 3, message: "Debe tener al menos 3 caracteres" },
-                { max: 25, message: "No puede sobrepasar los 25 caracteres" },
-              ]}
-            >
-              <Input
-                prefix={<UserOutlined />}
-                placeholder="John Doe"
-                id="name"
-                className="rounded-2xl text-gray-500 p-2 w-full"
-              />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                { required: true, message: "Este campo es requerido" },
-                { type: "email", message: "No es un email válido" },
-                { max: 100, message: "No puede sobrepasar los 100 caracteres" },
-              ]}
-            >
-              <Input
-                prefix={<FaRegEnvelope />}
-                placeholder="correo@email.com"
-                id="email"
-                className="rounded-2xl text-gray-500 p-2"
-              />
-            </Form.Item>
-            <Form.Item className="flex justify-center w-full mt-5">
-              <Button form noaction text="Siguiente" onclick={handleNext} />
-            </Form.Item>
-          </>
+          <Form.Item className="flex justify-center w-full mt-5">
+            <Button form noaction text="Siguiente" onclick={handleNext} />
+          </Form.Item>
         )}
 
+        <Form.Item
+          name="passw"
+          label="Contraseña"
+          hidden={steps !== 1}
+          rules={[
+            { required: true, message: "Este campo es requerido" },
+            { min: 8, message: "Debe tener al menos 8 caracteres" },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="thebestpassword123"
+            id="passw"
+            className="rounded-2xl text-gray-500 p-2 w-full"
+          />
+        </Form.Item>
+        <Form.Item
+          name="cpassw"
+          label="Confirme su contraseña"
+          hidden={steps !== 1}
+          validateFirst
+          dependencies={["passw"]}
+          rules={[
+            { required: true, message: "Este campo es requerido" },
+            { min: 8, message: "Debe tener al menos 8 caracteres" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("passw") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("Su contraseña no coincide"));
+              },
+            }),
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="thebestpassword123"
+            id="cpassw"
+            className="rounded-2xl text-gray-500 p-2 w-full"
+          />
+        </Form.Item>
         {steps === 1 && (
-          <>
-            <Form.Item
-              name="passw"
-              label="Contraseña"
-              rules={[
-                { required: true, message: "Este campo es requerido" },
-                { min: 8, message: "Debe tener al menos 8 caracteres" },
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined />}
-                placeholder="thebestpassword123"
-                id="passw"
-                className="rounded-2xl text-gray-500 p-2 w-full"
-              />
-            </Form.Item>
-            <Form.Item
-              name="cpassw"
-              label="Confirme su contraseña"
-              dependencies={["passw"]}
-              rules={[
-                { required: true, message: "Este campo es requerido" },
-                { min: 8, message: "Debe tener al menos 8 caracteres" },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("passw") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error("Su contraseña no coincide")
-                    );
-                  },
-                }),
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined />}
-                placeholder="thebestpassword123"
-                id="cpassw"
-                className="rounded-2xl text-gray-500 p-2 w-full"
-              />
-            </Form.Item>
-            <Form.Item className="flex justify-center mt-5">
-              <Button form text="Registrarse" />
-            </Form.Item>
-          </>
+          <Form.Item className="flex justify-center mt-5">
+            <Button form text="Registrarse" />
+          </Form.Item>
         )}
 
         <Form.Item className="self-center hover:scale-105 duration-100">
@@ -181,8 +188,8 @@ export default function Register() {
             className="flex items-center font-[Nunito]"
             onClick={steps === 1 ? () => setSteps(0) : null}
           >
-            <FaArrowLeft className="mr-2" />
-            Volver
+            {steps === 1 && <FaArrowLeft className="mr-2" />}
+            {steps === 1 ? "Volver" : "¿Ya tenés una cuenta?"}
           </Link>
         </Form.Item>
       </Form>
@@ -194,7 +201,6 @@ export default function Register() {
           <LoadingOutlined spin style={{ fontSize: 80, color: "#FFD6FF" }} />
         }
       />
-      {successRegister && <Navigate to="/home" replace />}
     </div>
   );
 }

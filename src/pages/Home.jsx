@@ -1,30 +1,38 @@
 import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { logoutRequest } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Layout, Menu, Spin, Modal, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useAuth } from "../context/Auth";
 const { Header, Content, Footer, Sider } = Layout;
 
-export default function Home({ user }) {
+export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
-  const [logout, setLogout] = useState(false);
   const [loading, setLoading] = useState(false);
   const [newTask, setNewTask] = useState(false);
   const [myData, setMyData] = useState(false);
 
+  const { isAuth, user, logout } = useAuth();
+
+  const navigate = useNavigate();
+
   const handleMenuClick = async (e) => {
     setLoading(true);
+
+    if (e.key == 1) {
+      setNewTask(true);
+      setLoading(false);
+    }
+
+    if (e.key == 2) {
+      setMyData(true);
+      setLoading(false);
+    }
+
     if (e.key == 3) {
-      await logoutRequest();
+      await logout();
       setLoading(false);
-      setLogout(true);
-    } else if (e.key == 1) {
-      setNewTask(true); 
-      setLoading(false);
-    } else if (e.key == 2) {
-      setMyData(true); 
-      setLoading(false);
+      navigate("/");
     }
   };
 
@@ -33,9 +41,11 @@ export default function Home({ user }) {
     setMyData(false);
   };
 
-  // if (!user) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <ConfigProvider
@@ -115,7 +125,7 @@ export default function Home({ user }) {
         <Layout>
           <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
             <h1 className="text-xl sm:text-3xl font-[Nunito]">
-              Welcome, user!
+              Bienvenido, {user ? user.name : "usuario"}!
             </h1>
           </Header>
           <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
@@ -135,21 +145,16 @@ export default function Home({ user }) {
           />
         }
       />
-      {logout && <Navigate to="/" replace />}
 
       <Modal
         title="Nueva Tarea"
-        visible={newTask}
+        open={newTask}
         onCancel={closeModal}
         footer={[
           <Button key="cancel" onClick={closeModal}>
             Cancelar
           </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={() => null}
-          >
+          <Button key="submit" type="primary" onClick={() => null}>
             Crear
           </Button>,
         ]}
@@ -159,7 +164,7 @@ export default function Home({ user }) {
 
       <Modal
         title="Mis Datos"
-        visible={myData}
+        open={myData}
         onCancel={closeModal}
         footer={[
           <Button key="ok" type="primary" onClick={closeModal}>
