@@ -264,11 +264,12 @@ export default function Home() {
               <Select
                 placeholder="Selecciona la prioridad"
                 className="text-gray-500"
-              >
-                <Select.Option value="baja">Baja</Select.Option>
-                <Select.Option value="media">Media</Select.Option>
-                <Select.Option value="alta">Alta</Select.Option>
-              </Select>
+                options={[
+                  { value: "baja", label: <span>Baja</span> },
+                  { value: "media", label: <span>Media</span> },
+                  { value: "alta", label: <span>Alta</span> },
+                ]}
+              />
             </Form.Item>
 
             <Form.Item
