@@ -87,6 +87,14 @@ export default function Home() {
             activeBorderColor: "#d6547b",
             hoverBorderColor: "#d6547b",
           },
+          Select: {
+            activeBorderColor: "#d6547b",
+            hoverBorderColor: "#d6547b",
+          },
+          DatePicker: {
+            activeBorderColor: "#d6547b",
+            hoverBorderColor: "#d6547b",
+          },
         },
       }}
     >
@@ -309,35 +317,39 @@ export default function Home() {
         open={myData}
         closable={false}
         className="border-4 border-[#d67794] rounded-xl"
-        footer={[
-          <Button
-            key="edit"
-            onClick={handleEditToggle}
-            className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
-          >
-            {isEditing ? "Cancelar" : "Editar"}
-          </Button>,
-          isEditing && (
+        footer={
+          <div className="flex justify-center space-x-4">
+            {" "}
+            {/* Centra y espacia los botones */}
             <Button
-              key="save"
-              type="primary"
-              onClick={() => setIsEditing(false)}
-              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
+              key="edit"
+              onClick={handleEditToggle}
+              className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
             >
-              Guardar
+              {isEditing ? "Cancelar" : "Editar"}
             </Button>
-          ),
-          !isEditing && (
-            <Button
-              key="ok"
-              type="primary"
-              onClick={closeModal}
-              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
-            >
-              OK
-            </Button>
-          ),
-        ]}
+            {isEditing && (
+              <Button
+                key="save"
+                type="primary"
+                onClick={() => setIsEditing(false)}
+                className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
+              >
+                Guardar
+              </Button>
+            )}
+            {!isEditing && (
+              <Button
+                key="ok"
+                type="primary"
+                onClick={closeModal}
+                className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
+              >
+                OK
+              </Button>
+            )}
+          </div>
+        }
         styles={{
           mask: { backdropFilter: "blur(10px)" },
         }}
@@ -408,8 +420,8 @@ export default function Home() {
           </div>,
         ]}
       >
-        <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#d67794]/90">
-          <p className="text-white font-semibold font-[Nunito] text-base">
+        <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl">
+          <p className="text-[#d67794] font-semibold font-[Nunito] text-base">
             Estás seguro de querer cerrar sesión?
           </p>
         </div>
