@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
-export default function ProtectedRoute({ onlyHome }) {
+export default function ProtectedRoute({ alrRegistered = false }) {
   const { loading, isAuth } = useAuth();
 
   if (loading)
@@ -17,9 +17,11 @@ export default function ProtectedRoute({ onlyHome }) {
       />
     );
 
-  if (!loading && !isAuth && !onlyHome) return <Navigate to="/login" replace />;
+  if (!loading && !isAuth && !alrRegistered)
+    return <Navigate to="/login" replace />;
 
-  if (!loading && isAuth && onlyHome) return <Navigate to="/home" replace />;
+  if (!loading && isAuth && alrRegistered)
+    return <Navigate to="/home" replace />;
 
   return <Outlet />;
 }

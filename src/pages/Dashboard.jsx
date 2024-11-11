@@ -15,7 +15,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useAuth } from "../context/Auth";
 const { Header, Content, Footer, Sider } = Layout;
 
-export default function AdminHome() {
+export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [myData, setMyData] = useState(false);
@@ -43,11 +43,11 @@ export default function AdminHome() {
   const handleLogout = async () => {
     setLogoutSure(false);
     setLoading(true);
-    await logout();  
+    await logout();
     setLoading(false);
-    navigate("/");  
+    navigate("/");
   };
-  
+
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
@@ -145,7 +145,7 @@ export default function AdminHome() {
         <Layout>
           <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
             <h1 className="text-xl sm:text-3xl font-[Nunito]">
-              Bienvenido/a, {user ? user.name : "usuario"}!
+              Hola, {user ? user.name : "usuario"}!
             </h1>
           </Header>
           <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>

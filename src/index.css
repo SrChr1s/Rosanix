@@ -20,6 +20,10 @@ body {
   @apply drop-shadow-sm;
 }
 
+.ant-modal-content {
+  @apply bg-gradient-to-b from-[#a5caf5] to-[#cebdf4];
+}
+
 @font-face {
   font-family: "Bebas";
   src: url("./assets/fonts/BebasNeue-Regular.ttf");

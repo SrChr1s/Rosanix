@@ -1,20 +1,20 @@
-import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/Auth";
+import dayjs from "dayjs";
 import {
   ConfigProvider,
   Layout,
   Menu,
   Spin,
-  Modal,
-  Button,
   Form,
   Input,
   Select,
   DatePicker,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useAuth } from "../context/Auth";
+import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
+import AntdModal from "../components/AntdModal";
 const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
 
@@ -25,6 +25,7 @@ export default function Home() {
   const [myData, setMyData] = useState(false);
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [today, setToday] = useState("");
 
   const { user, logout } = useAuth();
 
@@ -67,33 +68,40 @@ export default function Home() {
     setLogoutSure(false);
   };
 
+  useEffect(() => {
+    setToday(
+      `${dayjs().year()}-${(dayjs().month() + 1)
+        .toString()
+        .padStart(2, "0")}-${dayjs().date().toString().padStart(2, "0")}`
+    );
+  }, []);
+
   return (
     <ConfigProvider
       theme={{
         components: {
           Modal: {
-            contentBg: "#ffebf4",
-            headerBg: "#ffebf4",
-            footerBg: "#ffebf4",
+            headerBg: "transparent",
+            footerBg: "transparent",
           },
           Layout: {
             triggerBg: "#84799b3e",
           },
           Button: {
-            colorPrimaryHover: "#d6547b",
+            colorPrimaryHover: "#947bcf",
           },
           Input: {
             colorBorder: "white",
-            activeBorderColor: "#d6547b",
-            hoverBorderColor: "#d6547b",
+            activeBorderColor: "#947bcf",
+            hoverBorderColor: "#947bcf",
           },
           Select: {
-            activeBorderColor: "#d6547b",
-            hoverBorderColor: "#d6547b",
+            activeBorderColor: "#947bcf",
+            hoverBorderColor: "#947bcf",
           },
           DatePicker: {
-            activeBorderColor: "#d6547b",
-            hoverBorderColor: "#d6547b",
+            activeBorderColor: "#947bcf",
+            hoverBorderColor: "#947bcf",
           },
         },
       }}
@@ -166,7 +174,7 @@ export default function Home() {
         <Layout>
           <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
             <h1 className="text-xl sm:text-3xl font-[Nunito]">
-              Bienvenido/a, {user ? user.name : "usuario"}!
+              Hola, {user ? user.name : "usuario"}!
             </h1>
           </Header>
           <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
@@ -187,245 +195,162 @@ export default function Home() {
         }
       />
 
-      <Modal
-        title={
-          <div className="flex justify-center font-[Nunito] text-[#d67794] text-xl font-semibold mt-2">
-            Nueva tarea
-          </div>
-        }
-        centered
+      <AntdModal
+        title="Nueva Tarea"
         open={newTask}
-        closable={false}
-        className="border-4 border-[#d67794] rounded-xl"
-        styles={{
-          mask: { backdropFilter: "blur(10px)" },
-        }}
-        footer={[
-          <div className="flex justify-center gap-3">
-            <Button
-              key="cancel"
-              onClick={closeModal}
-              className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
-            >
-              Cancelar
-            </Button>
-            ,
-            <Button
-              key="submit"
-              type="primary"
-              onClick={() => null}
-              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
-            >
-              Crear
-            </Button>
-          </div>,
-        ]}
-      >
-        <Form
-          name="newTask"
-          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#d67794]/90"
-          layout="vertical"
-          autoComplete="off"
-          onFinish={
-            {
-              /* funcion */
-            }
-          }
-        >
-          <Form.Item
-            name="title"
-            label={
-              <span className="text-white font-[Nunito] font-semibold select-none">
-                Nombre de la tarea
-              </span>
-            }
-            rules={[
+        onCancel={closeModal}
+        btnCancel={"Cancelar"}
+        btnOk={"Crear"}
+        children={
+          <Form
+            name="newTask"
+            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-gradient-to-t from-[#a5caf5] to-[#cebdf4]"
+            layout="vertical"
+            autoComplete="off"
+            onFinish={
               {
-                required: true,
-                message: "Por favor ingresa el nombre de la tarea",
-              },
-            ]}
-          >
-            <Input
-              placeholder="Nombre de la tarea"
-              className="text-gray-500 p-1.5 pl-4"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="descr"
-            label={
-              <span className="text-white font-[Nunito] font-semibold select-none">
-                Descripción (opcional)
-              </span>
+                /* funcion */
+              }
             }
           >
-            <TextArea
-              placeholder="Descripción de la tarea"
-              className="max-h-[80px] text-gray-500 p-1.5 pl-4"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="priority"
-            label={
-              <span className="text-white font-[Nunito] font-semibold select-none">
-                Selecciona la prioridad
-              </span>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Por favor selecciona una prioridad",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Selecciona la prioridad"
-              className="text-gray-500"
+            <Form.Item
+              name="title"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Nombre de la tarea
+                </span>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingresa el nombre de la tarea",
+                },
+              ]}
             >
-              <Select.Option value="baja">Baja</Select.Option>
-              <Select.Option value="media">Media</Select.Option>
-              <Select.Option value="alta">Alta</Select.Option>
-            </Select>
-          </Form.Item>
+              <Input
+                placeholder="Nombre de la tarea"
+                className="text-gray-500 p-1.5 pl-4"
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="expiresIn"
-            label={
-              <span className="text-white font-[Nunito] font-semibold select-none">
-                Fecha de expiración (opcional)
-              </span>
-            }
-          >
-            <DatePicker
-              className="w-full text-gray-500"
-              placeholder="Selecciona una fecha"
-              format="YYYY-MM-DD"
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+            <Form.Item
+              name="descr"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Descripción (opcional)
+                </span>
+              }
+            >
+              <TextArea
+                placeholder="Descripción de la tarea"
+                className="max-h-[80px] text-gray-500 p-1.5 pl-4"
+              />
+            </Form.Item>
 
-      <Modal
-        title={
-          <div className="flex justify-center font-[Nunito] text-[#d67794] text-xl font-semibold mt-2">
-            Mis datos
-          </div>
+            <Form.Item
+              name="priority"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Selecciona la prioridad
+                </span>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor selecciona una prioridad",
+                },
+              ]}
+            >
+              <Select
+                placeholder="Selecciona la prioridad"
+                className="text-gray-500"
+              >
+                <Select.Option value="baja">Baja</Select.Option>
+                <Select.Option value="media">Media</Select.Option>
+                <Select.Option value="alta">Alta</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="expiresIn"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Fecha de expiración (opcional)
+                </span>
+              }
+            >
+              <DatePicker
+                className="w-full text-gray-500"
+                placeholder="Selecciona una fecha"
+                format="YYYY-MM-DD"
+                minDate={dayjs(today, "YYYY-MM-DD")}
+              />
+            </Form.Item>
+          </Form>
         }
-        centered
+      />
+
+      <AntdModal
+        title="Mis Datos"
         open={myData}
-        closable={false}
-        className="border-4 border-[#d67794] rounded-xl"
-        footer={
-          <div className="flex justify-center space-x-4">
-            {" "}
-            {/* Centra y espacia los botones */}
-            <Button
-              key="edit"
-              onClick={handleEditToggle}
-              className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
+        onCancel={isEditing ? handleEditToggle : closeModal}
+        onOk={isEditing ? null : handleEditToggle} // AGREGAR FUNCION GUARDAR DATOS
+        btnCancel={isEditing ? "Cancelar" : "Cerrar"}
+        btnOk={isEditing ? "Guardar" : "Editar"}
+        children={
+          <Form
+            layout="vertical"
+            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-gradient-to-t from-[#a5caf5] to-[#cebdf4]"
+            autoComplete="off"
+          >
+            <Form.Item
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Nombre
+                </span>
+              }
             >
-              {isEditing ? "Cancelar" : "Editar"}
-            </Button>
-            {isEditing && (
-              <Button
-                key="save"
-                type="primary"
-                onClick={() => setIsEditing(false)}
-                className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
-              >
-                Guardar
-              </Button>
-            )}
-            {!isEditing && (
-              <Button
-                key="ok"
-                type="primary"
-                onClick={closeModal}
-                className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
-              >
-                OK
-              </Button>
-            )}
-          </div>
-        }
-        styles={{
-          mask: { backdropFilter: "blur(10px)" },
-        }}
-      >
-        <Form
-          layout="vertical"
-          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#d67794]/90"
-        >
-          <Form.Item
-            label={
-              <span className="text-white font-[Nunito] font-semibold select-none">
-                Nombre
-              </span>
-            }
-          >
-            <Input
-              placeholder="Nombre de usuario"
-              disabled={!isEditing}
-              className="text-gray-500 p-1.5 pl-4"
-            />
-          </Form.Item>
+              <Input
+                placeholder="Nombre de usuario"
+                disabled={!isEditing}
+                className="text-gray-500 p-1.5 pl-4"
+                value={user.name}
+              />
+            </Form.Item>
 
-          <Form.Item
-            label={
-              <span className="text-white font-[Nunito] font-semibold select-none">
-                Email
-              </span>
-            }
-          >
-            <Input
-              placeholder="Correo electrónico"
-              disabled={!isEditing}
-              className="text-gray-500 p-1.5 pl-4"
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title={
-          <div className="flex justify-center font-[Nunito] text-[#d67794] text-xl font-semibold mt-2">
-            Cerrar sesión
-          </div>
+            <Form.Item
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Email
+                </span>
+              }
+            >
+              <Input
+                placeholder="Correo electrónico"
+                disabled={!isEditing}
+                className="text-gray-500 p-1.5 pl-4"
+                value={user.email}
+              />
+            </Form.Item>
+          </Form>
         }
-        centered
+      />
+
+      <AntdModal
+        title="Cerrar sesión"
         open={logoutSure}
-        closable={false}
-        className="border-4 border-[#d67794] rounded-xl"
-        styles={{ mask: { backdropFilter: "blur(10px)" } }}
-        footer={[
-          <div className="flex justify-center gap-3">
-            <Button
-              key="cancel"
-              onClick={closeModal}
-              className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
-            >
-              Cancelar
-            </Button>
-            ,
-            <Button
-              key="ok"
-              type="primary"
-              onClick={handleLogout}
-              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
-            >
-              Aceptar
-            </Button>
-          </div>,
-        ]}
-      >
-        <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl">
-          <p className="text-[#d67794] font-semibold font-[Nunito] text-base">
-            Estás seguro de querer cerrar sesión?
-          </p>
-        </div>
-      </Modal>
+        onCancel={closeModal}
+        onOk={handleLogout}
+        btnCancel={"No"}
+        btnOk={"Si"}
+        children={
+          <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-gradient-to-t from-[#a5caf5] to-[#cebdf4]">
+            <p className="text-white font-semibold font-[Nunito] text-base">
+              Estás seguro de querer cerrar sesión?
+            </p>
+          </div>
+        }
+      />
     </ConfigProvider>
   );
 }
