@@ -50,6 +50,43 @@ export default function Home() {
     }
   };
 
+  const handleSend = async (values) => {
+    setLoading(true);
+    const res = await signin(values);
+
+    if (res) {
+      if (res.code == "ERR_NETWORK") {
+        setLoading(false);
+        return MySwal.fire({
+          icon: "error",
+          title: "Ups!",
+          text: "Error en el servidor, intenta más tarde.",
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#e299b6",
+        });
+      }
+      setLoading(false);
+      MySwal.fire({
+        icon: "error",
+        title: "Ups!",
+        text: res.response.data,
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      });
+    } else {
+      setLoading(false);
+      await MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Has iniciado sesión correctamente",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => {
+        navigate("/home");
+      });
+    }
+  };
+
   const handleLogout = async () => {
     setLogoutSure(false);
     setLoading(true);

@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
@@ -14,16 +15,16 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
 
-        <Route element={<ProtectedRoute alrRegistered />}>
+        <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
 
-        <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute role="usuario" fallback="/login" />}>
           <Route path="/home" element={<Home />} />
         </Route>
 
-        <Route>
+        <Route element={<ProtectedRoute role="admin" fallback="/notfound" />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
 
