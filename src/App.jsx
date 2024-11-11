@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminHome from "./pages/AdminHome";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route element={<ProtectedRoute onlyHome={false} />}>
           <Route path="/home" element={<Home />} />
         </Route>
-
+        <Route path="/admin" element={<AdminHome />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
