@@ -1,10 +1,22 @@
 import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ConfigProvider, Layout, Menu, Spin, Modal, Button } from "antd";
+import {
+  ConfigProvider,
+  Layout,
+  Menu,
+  Spin,
+  Modal,
+  Button,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+} from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useAuth } from "../context/Auth";
 const { Header, Content, Footer, Sider } = Layout;
+const { TextArea } = Input;
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
@@ -54,6 +66,11 @@ export default function Home() {
     <ConfigProvider
       theme={{
         components: {
+          Modal: {
+            contentBg: "#ffebf4",
+            headerBg: "#ffebf4",
+            footerBg: "#ffebf4",
+          },
           Layout: {
             triggerBg: "#84799b3e",
           },
@@ -150,27 +167,132 @@ export default function Home() {
       />
 
       <Modal
-        title="Nueva Tarea"
+        title={
+          <div className="flex justify-center font-[Nunito] text-[#da83a7] text-xl font-semibold mt-2">
+            Nueva tarea
+          </div>
+        }
         centered
         open={newTask}
-        styles={{ mask: { backdropFilter: "blur(10px)" } }}
+        closable={false}
+        className="border-4 border-[#e28eb1] rounded-xl"
+        styles={{
+          mask: { backdropFilter: "blur(10px)" },
+        }}
         footer={[
-          <Button key="cancel" onClick={closeModal}>
-            Cancelar
-          </Button>,
-          <Button key="submit" type="primary" onClick={() => null}>
-            Crear
-          </Button>,
+          <div className="flex justify-center gap-3">
+            <Button
+              key="cancel"
+              onClick={closeModal}
+              className="rounded-full bg-white text-[#da83a7] font-semibold border-2 border-[#da83a7]"
+            >
+              Cancelar
+            </Button>
+            ,
+            <Button
+              key="submit"
+              type="primary"
+              onClick={() => null}
+              className="rounded-full text-white bg-[#da83a7] font-semibold border-2 border-[#da83a7] hover:bg-white"
+            >
+              Crear
+            </Button>
+          </div>,
         ]}
       >
-        <p>Campos para la nueva tarea</p>
+        <Form
+          name="newTask"
+          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#da83a7]/90"
+          layout="vertical"
+          autoComplete="off"
+          onFinish={
+            {
+              /* funcion */
+            }
+          }
+        >
+          <Form.Item
+            name="title"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Nombre de la tarea
+              </span>
+            }
+            rules={[
+              {
+                required: true,
+                message: "Por favor ingresa el nombre de la tarea",
+              },
+            ]}
+          >
+            <Input
+              placeholder="Nombre de la tarea"
+              className="text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="descr"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Descripción (opcional)
+              </span>
+            }
+          >
+            <TextArea
+              placeholder="Descripción de la tarea"
+              className="max-h-[80px] text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="priority"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Selecciona la prioridad
+              </span>
+            }
+            rules={[
+              {
+                required: true,
+                message: "Por favor selecciona una prioridad",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Selecciona la prioridad"
+              className="text-gray-500"
+            >
+              <Select.Option value="baja">Baja</Select.Option>
+              <Select.Option value="media">Media</Select.Option>
+              <Select.Option value="alta">Alta</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="expiresIn"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Fecha de expiración (opcional)
+              </span>
+            }
+          >
+            <DatePicker
+              className="w-full text-gray-500"
+              placeholder="Selecciona una fecha"
+              format="YYYY-MM-DD"
+            />
+          </Form.Item>
+        </Form>
       </Modal>
 
       <Modal
         title="Mis Datos"
         centered
         open={myData}
-        styles={{ mask: { backdropFilter: "blur(10px)" } }}
+        styles={{
+          mask: { backdropFilter: "blur(10px)" },
+        }}
         footer={[
           <Button key="ok" type="primary" onClick={closeModal}>
             OK
