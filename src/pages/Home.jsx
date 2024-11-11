@@ -204,7 +204,7 @@ export default function Home() {
         children={
           <Form
             name="newTask"
-            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-gradient-to-t from-[#a5caf5] to-[#cebdf4]"
+            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             layout="vertical"
             autoComplete="off"
             onFinish={
@@ -300,7 +300,7 @@ export default function Home() {
         children={
           <Form
             layout="vertical"
-            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-gradient-to-t from-[#a5caf5] to-[#cebdf4]"
+            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             autoComplete="off"
           >
             <Form.Item
@@ -344,7 +344,7 @@ export default function Home() {
         btnCancel={"No"}
         btnOk={"Si"}
         children={
-          <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-gradient-to-t from-[#a5caf5] to-[#cebdf4]">
+          <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent">
             <p className="text-white font-semibold font-[Nunito] text-base">
               Estás seguro de querer cerrar sesión?
             </p>

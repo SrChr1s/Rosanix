@@ -21,7 +21,7 @@ body {
 }
 
 .ant-modal-content {
-  @apply bg-gradient-to-b from-[#a5caf5] to-[#cebdf4];
+  @apply bg-gradient-to-b from-[#cebdf4] to-[#a5caf5];
 }
 
 @font-face {
