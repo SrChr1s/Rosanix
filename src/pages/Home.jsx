@@ -24,6 +24,7 @@ export default function Home() {
   const [newTask, setNewTask] = useState(false);
   const [myData, setMyData] = useState(false);
   const [logoutSure, setLogoutSure] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const { user, logout } = useAuth();
 
@@ -56,6 +57,10 @@ export default function Home() {
     navigate("/");
   };
 
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
   const closeModal = () => {
     setNewTask(false);
     setMyData(false);
@@ -73,6 +78,14 @@ export default function Home() {
           },
           Layout: {
             triggerBg: "#84799b3e",
+          },
+          Button: {
+            colorPrimaryHover: "#d6547b",
+          },
+          Input: {
+            colorBorder: "white",
+            activeBorderColor: "#d6547b",
+            hoverBorderColor: "#d6547b",
           },
         },
       }}
@@ -168,14 +181,14 @@ export default function Home() {
 
       <Modal
         title={
-          <div className="flex justify-center font-[Nunito] text-[#da83a7] text-xl font-semibold mt-2">
+          <div className="flex justify-center font-[Nunito] text-[#d67794] text-xl font-semibold mt-2">
             Nueva tarea
           </div>
         }
         centered
         open={newTask}
         closable={false}
-        className="border-4 border-[#e28eb1] rounded-xl"
+        className="border-4 border-[#d67794] rounded-xl"
         styles={{
           mask: { backdropFilter: "blur(10px)" },
         }}
@@ -184,7 +197,7 @@ export default function Home() {
             <Button
               key="cancel"
               onClick={closeModal}
-              className="rounded-full bg-white text-[#da83a7] font-semibold border-2 border-[#da83a7]"
+              className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
             >
               Cancelar
             </Button>
@@ -193,7 +206,7 @@ export default function Home() {
               key="submit"
               type="primary"
               onClick={() => null}
-              className="rounded-full text-white bg-[#da83a7] font-semibold border-2 border-[#da83a7] hover:bg-white"
+              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
             >
               Crear
             </Button>
@@ -202,7 +215,7 @@ export default function Home() {
       >
         <Form
           name="newTask"
-          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#da83a7]/90"
+          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#d67794]/90"
           layout="vertical"
           autoComplete="off"
           onFinish={
@@ -287,36 +300,119 @@ export default function Home() {
       </Modal>
 
       <Modal
-        title="Mis Datos"
+        title={
+          <div className="flex justify-center font-[Nunito] text-[#d67794] text-xl font-semibold mt-2">
+            Mis datos
+          </div>
+        }
         centered
         open={myData}
+        closable={false}
+        className="border-4 border-[#d67794] rounded-xl"
+        footer={[
+          <Button
+            key="edit"
+            onClick={handleEditToggle}
+            className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
+          >
+            {isEditing ? "Cancelar" : "Editar"}
+          </Button>,
+          isEditing && (
+            <Button
+              key="save"
+              type="primary"
+              onClick={() => setIsEditing(false)}
+              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
+            >
+              Guardar
+            </Button>
+          ),
+          !isEditing && (
+            <Button
+              key="ok"
+              type="primary"
+              onClick={closeModal}
+              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
+            >
+              OK
+            </Button>
+          ),
+        ]}
         styles={{
           mask: { backdropFilter: "blur(10px)" },
         }}
-        footer={[
-          <Button key="ok" type="primary" onClick={closeModal}>
-            OK
-          </Button>,
-        ]}
       >
-        <p>Datos del usuario</p>
+        <Form
+          layout="vertical"
+          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#d67794]/90"
+        >
+          <Form.Item
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Nombre
+              </span>
+            }
+          >
+            <Input
+              placeholder="Nombre de usuario"
+              disabled={!isEditing}
+              className="text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Email
+              </span>
+            }
+          >
+            <Input
+              placeholder="Correo electrónico"
+              disabled={!isEditing}
+              className="text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+        </Form>
       </Modal>
 
       <Modal
-        title="Cerrar sesión"
+        title={
+          <div className="flex justify-center font-[Nunito] text-[#d67794] text-xl font-semibold mt-2">
+            Cerrar sesión
+          </div>
+        }
         centered
         open={logoutSure}
+        closable={false}
+        className="border-4 border-[#d67794] rounded-xl"
         styles={{ mask: { backdropFilter: "blur(10px)" } }}
         footer={[
-          <Button key="cancel" onClick={closeModal}>
-            Cancelar
-          </Button>,
-          <Button key="ok" type="primary" onClick={handleLogout}>
-            Aceptar
-          </Button>,
+          <div className="flex justify-center gap-3">
+            <Button
+              key="cancel"
+              onClick={closeModal}
+              className="rounded-full bg-white text-[#d67794] font-semibold border-2 border-[#d67794]"
+            >
+              Cancelar
+            </Button>
+            ,
+            <Button
+              key="ok"
+              type="primary"
+              onClick={handleLogout}
+              className="rounded-full text-white bg-[#d67794] font-semibold border-2 border-[#d67794] hover:bg-white"
+            >
+              Aceptar
+            </Button>
+          </div>,
         ]}
       >
-        <p>Estás seguro de querer cerrar sesión?</p>
+        <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-[#d67794]/90">
+          <p className="text-white font-semibold font-[Nunito] text-base">
+            Estás seguro de querer cerrar sesión?
+          </p>
+        </div>
       </Modal>
     </ConfigProvider>
   );
