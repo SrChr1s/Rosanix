@@ -26,14 +26,12 @@ export default function AntdModal({
       footer={
         <div className="flex justify-center gap-3">
           <Button
-            key="cancel"
             onClick={onCancel}
             className="rounded-full bg-white text-[#bbacdf] font-semibold border-2 border-[#bbacdf]"
           >
             {btnCancel}
           </Button>
           <Button
-            key="submit"
             type="primary"
             onClick={onOk}
             className="rounded-full text-white bg-[#bbacdf] font-semibold border-2 border-[#bbacdf]/60"

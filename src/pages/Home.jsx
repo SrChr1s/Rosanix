@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTasks } from "../context/Tasks";
 import { useAuth } from "../context/Auth";
 import dayjs from "dayjs";
 import {
@@ -11,9 +12,13 @@ import {
   Input,
   Select,
   DatePicker,
+  Card,
+  Button,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
+import { FaIdCard, FaKey, FaPlus, FaPencil, FaTrash } from "react-icons/fa6";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import AntdModal from "../components/AntdModal";
 const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
@@ -28,8 +33,11 @@ export default function Home() {
   const [today, setToday] = useState("");
 
   const { user, logout } = useAuth();
+  const { tasks, getTasks, createTask } = useTasks();
 
   const navigate = useNavigate();
+
+  const MySwal = withReactContent(Swal);
 
   const handleMenuClick = async (e) => {
     setLoading(true);
@@ -52,7 +60,7 @@ export default function Home() {
 
   const handleSend = async (values) => {
     setLoading(true);
-    const res = await signin(values);
+    const res = await createTask(values);
 
     if (res) {
       if (res.code == "ERR_NETWORK") {
@@ -78,12 +86,10 @@ export default function Home() {
       await MySwal.fire({
         icon: "success",
         title: "Éxito!",
-        text: "Has iniciado sesión correctamente",
+        text: "Has creado una tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then(() => {
-        navigate("/home");
-      });
+      }).then((res) => closeModal());
     }
   };
 
@@ -111,6 +117,10 @@ export default function Home() {
         .toString()
         .padStart(2, "0")}-${dayjs().date().toString().padStart(2, "0")}`
     );
+  }, []);
+
+  useEffect(() => {
+    getTasks();
   }, []);
 
   return (
@@ -214,7 +224,27 @@ export default function Home() {
               Hola, {user ? user.name : "usuario"}!
             </h1>
           </Header>
-          <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
+          <Content className="flex flex-shrink justify-evenly pt-2 items-start bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
+            {tasks.map((task) => (
+              <Card
+                key={task.id}
+                title={task.descr ? `${task.title}` : null}
+                bordered={false}
+                className="w-[300px] flex flex-col"
+                actions={[
+                  <p>{dayjs(task.createdAt).format("DD/MM/YYYY")}</p>,
+                  <FaPencil className="place-self-center mt-1" key="edit" />,
+                  <FaTrash className="place-self-center mt-1" key="delete" />,
+                ]}
+              >
+                {task.descr ? (
+                  <p className="mb-5">{task.descr}</p>
+                ) : (
+                  <p className="text-base font-semibold">{task.title}</p>
+                )}
+              </Card>
+            ))}
+          </Content>
           <Footer className="bg-[#bbacdf]"></Footer>
         </Layout>
       </Layout>
@@ -236,6 +266,7 @@ export default function Home() {
         title="Nueva Tarea"
         open={newTask}
         onCancel={closeModal}
+        onOk={() => document.getElementById("btn-newtask-submit").click()}
         btnCancel={"Cancelar"}
         btnOk={"Crear"}
         children={
@@ -244,11 +275,7 @@ export default function Home() {
             className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             layout="vertical"
             autoComplete="off"
-            onFinish={
-              {
-                /* funcion */
-              }
-            }
+            onFinish={handleSend}
           >
             <Form.Item
               name="title"
@@ -310,7 +337,7 @@ export default function Home() {
             </Form.Item>
 
             <Form.Item
-              name="expiresIn"
+              name="exp"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Fecha de expiración (opcional)
@@ -324,6 +351,7 @@ export default function Home() {
                 minDate={dayjs(today, "YYYY-MM-DD")}
               />
             </Form.Item>
+            <Button id="btn-newtask-submit" htmlType="submit" hidden />
           </Form>
         }
       />
