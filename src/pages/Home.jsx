@@ -33,7 +33,7 @@ export default function Home() {
   const [today, setToday] = useState("");
 
   const { user, logout, updateInfo } = useAuth();
-  const { tasks, getTasks, createTask } = useTasks();
+  const { tasks, getTasks, createTask, deleteTask } = useTasks();
 
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ export default function Home() {
     }
   };
 
-  const handleSend = async (values) => {
+  const handleCreateTask = async (values) => {
     setLoading(true);
     const res = await createTask(values);
 
@@ -91,6 +91,28 @@ export default function Home() {
         confirmButtonColor: "#e299b6",
       }).then((res) => closeModal());
     }
+  };
+
+  const handleDeleteTask = (id) => {
+    MySwal.fire({
+      title: "Estás seguro?",
+      text: "No podrás recuperar esta tarea!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, borrala!",
+      cancelButtonText: "No, me arrepentí",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteTask(id);
+        MySwal.fire({
+          title: "Eliminado!",
+          text: "Tu tarea ha sido eliminada con éxito.",
+          icon: "success",
+        });
+      }
+    });
   };
 
   const handleLogout = async () => {
@@ -248,7 +270,11 @@ export default function Home() {
                 actions={[
                   <p>{dayjs(task.createdAt).format("DD/MM/YYYY")}</p>,
                   <FaPencil className="place-self-center mt-1" key="edit" />,
-                  <FaTrash className="place-self-center mt-1" key="delete" />,
+                  <FaTrash
+                    className="place-self-center mt-1"
+                    key="delete"
+                    onClick={() => handleDeleteTask(task.id)}
+                  />,
                 ]}
               >
                 {task.descr ? (
@@ -289,7 +315,7 @@ export default function Home() {
             className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             layout="vertical"
             autoComplete="off"
-            onFinish={handleSend}
+            onFinish={handleCreateTask}
           >
             <Form.Item
               name="title"

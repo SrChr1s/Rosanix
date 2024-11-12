@@ -3,6 +3,7 @@ import {
   getTasksRequest,
   createTaskRequest,
   updateTaskRequest,
+  deleteTaskRequest,
 } from "../api/tasks";
 
 const TaskContext = createContext();
@@ -24,8 +25,16 @@ export const TaskProvider = ({ children }) => {
 
   const createTask = async (task) => {
     try {
-      const res = await createTaskRequest(task);
-      setTasks((prevTasks) => [...prevTasks, res.data]);
+      await createTaskRequest(task);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      const res = await deleteTaskRequest(id);
+      if (res.status === 204) setTasks(tasks.filter((task) => task.id !== id));
     } catch (err) {
       console.log(err);
     }
@@ -45,6 +54,8 @@ export const TaskProvider = ({ children }) => {
         tasks,
         getTasks,
         createTask,
+        updateTask,
+        deleteTask,
       }}
     >
       {children}
