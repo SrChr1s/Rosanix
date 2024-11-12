@@ -17,10 +17,8 @@ export default function ProtectedRoute({ active, role, fallback = "/login" }) {
       />
     );
 
-  if (!loading && !isAuth) return <Navigate to={`${fallback}`} replace />;
-
-  if (!loading && active && user.active !== 1)
-    return <Navigate to="/cuenta-inactiva" replace />;
+  if ((!loading && !isAuth) || user.active != 1)
+    return <Navigate to={`${fallback}`} replace />;
 
   if (!loading && role && user.role !== role)
     return <Navigate to={`${fallback}`} replace />;

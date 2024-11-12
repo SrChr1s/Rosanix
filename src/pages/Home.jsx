@@ -138,7 +138,7 @@ export default function Home() {
         email: document.getElementById("email").value,
       });
       navigate(0);
-    }, 3000);
+    }, 1000);
   };
 
   const closeModal = () => {

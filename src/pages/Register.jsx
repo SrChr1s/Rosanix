@@ -64,9 +64,19 @@ export default function Register() {
         text: "Su cuenta ha sido registrada con éxito",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then(() => {
-        navigate("/home");
-      });
+      })
+        .then(() => {
+          MySwal.fire({
+            icon: "info",
+            title: "Espera!",
+            text: "Te hemos enviado un correo de confirmación, por favor revisa tu bandeja de entrada!",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#e299b6",
+          });
+        })
+        .then(() => {
+          navigate("/login");
+        });
     }
   };
 

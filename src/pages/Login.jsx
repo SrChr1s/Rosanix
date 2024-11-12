@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 export default function Login() {
-  const { signin } = useAuth();
+  const { signin, user } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -18,6 +18,18 @@ export default function Login() {
 
   const handleSend = async (values) => {
     setLoading(true);
+
+    if (user) {
+      setLoading(false);
+      return MySwal.fire({
+        icon: "info",
+        title: "Ups!",
+        text: "Necesitas confirmar tu correo antes de poder entrar",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      });
+    }
+
     const res = await signin(values);
 
     if (res) {
