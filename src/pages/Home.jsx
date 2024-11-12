@@ -382,7 +382,7 @@ export default function Home() {
         btnCancel={"No"}
         btnOk={"Si"}
         children={
-          <div className="flex flex-col items-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent">
+          <div className="flex flex-col text-center px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent">
             <p className="text-white font-semibold font-[Nunito] text-base">
               Estás seguro de querer cerrar sesión?
             </p>
