@@ -17,7 +17,7 @@ export default function PublicRoute() {
       />
     );
 
-  if (!loading && isAuth)
+  if (!loading && isAuth && user.active === 1)
     return (
       <Navigate
         to={`${user.role === "usuario" ? "/home" : "/dashboard"}`}

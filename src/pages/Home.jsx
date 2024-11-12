@@ -32,7 +32,7 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState(false);
   const [today, setToday] = useState("");
 
-  const { user, logout } = useAuth();
+  const { user, logout, updateInfo } = useAuth();
   const { tasks, getTasks, createTask } = useTasks();
 
   const navigate = useNavigate();
@@ -103,6 +103,20 @@ export default function Home() {
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
+  };
+
+  const handleSaveProfile = () => {
+    handleEditToggle();
+    closeModal();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      updateInfo({
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+      });
+      navigate(0);
+    }, 3000);
   };
 
   const closeModal = () => {
@@ -361,7 +375,7 @@ export default function Home() {
         title="Mis Datos"
         open={myData}
         onCancel={isEditing ? handleEditToggle : closeModal}
-        onOk={isEditing ? null : handleEditToggle} // AGREGAR FUNCION GUARDAR DATOS
+        onOk={isEditing ? handleSaveProfile : handleEditToggle}
         btnCancel={isEditing ? "Cancelar" : "Cerrar"}
         btnOk={isEditing ? "Guardar" : "Editar"}
         children={
@@ -378,10 +392,11 @@ export default function Home() {
               }
             >
               <Input
+                id="name"
                 placeholder="Nombre de usuario"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
-                value={user.name}
+                defaultValue={user.name}
               />
             </Form.Item>
 
@@ -393,10 +408,11 @@ export default function Home() {
               }
             >
               <Input
+                id="email"
                 placeholder="Correo electrónico"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
-                value={user.email}
+                defaultValue={user.email}
               />
             </Form.Item>
           </Form>

@@ -6,6 +6,7 @@ import {
   verTokenRequest,
 } from "../api/auth";
 import Cookies from "js-cookie";
+import { updateInfoRequest } from "../api/users";
 
 export const AuthContext = createContext();
 
@@ -54,6 +55,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateInfo = async (info) => {
+    try {
+      const res = await updateInfoRequest(info);
+      setUser({ ...user, name: res.data.name, email: res.data.email });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     async function checkLogin() {
       const cookies = Cookies.get();
@@ -90,6 +100,7 @@ export const AuthProvider = ({ children }) => {
         signin,
         signup,
         logout,
+        updateInfo,
         isAuth,
         loading,
         errors,
