@@ -14,6 +14,8 @@ import {
   DatePicker,
   Card,
   Button,
+  Row,
+  Col,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { FaIdCard, FaKey, FaPlus, FaPencil, FaTrash } from "react-icons/fa6";
@@ -186,15 +188,19 @@ export default function Home() {
             activeBorderColor: "#947bcf",
             hoverBorderColor: "#947bcf",
           },
+          Card: {
+            colorTextHeading: "#ffffff",
+            headerBg: "#e299b6",
+          },
         },
       }}
     >
-      <Layout className="overflow-hidden">
+      <Layout className="overflow-hidden min-h-screen bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
         <Sider
           collapsible
           collapsed={isOpen}
           onCollapse={() => setIsOpen(!isOpen)}
-          className="h-dvh bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"
+          className="fixed min-h-screen inset-0 overflow-auto top-0 bottom-0 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4] transition-all duration-300"
           width={230}
         >
           {isOpen && (
@@ -254,36 +260,54 @@ export default function Home() {
             ]}
           />
         </Sider>
-        <Layout>
-          <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
+        <Layout
+          className={`${
+            isOpen ? "ml-[80px]" : "ml-[230px]"
+          } transition-all duration-300`}
+        >
+          <Header className="flex items-center w-screen pl-5 text-white bg-[#a5caf5]">
             <h1 className="text-xl sm:text-3xl font-[Nunito]">
               Hola, {user ? user.name : "usuario"}!
             </h1>
           </Header>
-          <Content className="flex flex-shrink justify-evenly pt-2 items-start bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
-            {tasks.map((task) => (
-              <Card
-                key={task.id}
-                title={task.descr ? `${task.title}` : null}
-                bordered={false}
-                className="w-[300px] flex flex-col"
-                actions={[
-                  <p>{dayjs(task.createdAt).format("DD/MM/YYYY")}</p>,
-                  <FaPencil className="place-self-center mt-1" key="edit" />,
-                  <FaTrash
-                    className="place-self-center mt-1"
-                    key="delete"
-                    onClick={() => handleDeleteTask(task.id)}
-                  />,
-                ]}
-              >
-                {task.descr ? (
-                  <p className="mb-5">{task.descr}</p>
-                ) : (
-                  <p className="text-base font-semibold">{task.title}</p>
-                )}
-              </Card>
-            ))}
+          <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
+            <div className="w-full max-w-screen-lg px-4 lg:px-0 py-4">
+              <Row gutter={[16, 16]} justify="start">
+                {tasks.map((task) => (
+                  <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
+                    <Card
+                      title={
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-semibold text-white">
+                            {task.title}
+                          </h2>
+                          <span className="text-xs text-[#a35776]">
+                            {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                          </span>
+                        </div>
+                      }
+                      bordered={false}
+                      className="w-full flex flex-col justify-between min-h-[200px] shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
+                      actions={[
+                        <FaPencil
+                          className="place-self-center mt-1 hover:text-[#d47da0]"
+                          key="edit"
+                        />,
+                        <FaTrash
+                          className="place-self-center mt-1 hover:text-[#d47da0]"
+                          key="delete"
+                          onClick={() => handleDeleteTask(task.id)}
+                        />,
+                      ]}
+                    >
+                      {task.descr ? (
+                        <p className="px-4 text-gray-700 mb-5">{task.descr}</p>
+                      ) : null}
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </div>
           </Content>
           <Footer className="bg-[#bbacdf]"></Footer>
         </Layout>
