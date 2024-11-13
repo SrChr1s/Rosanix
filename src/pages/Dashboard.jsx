@@ -36,9 +36,8 @@ const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
 
 const statsData = [
-  // BORRAR
   {
-    title: "Usuarios activos",
+    title: "Usuarios Activos",
     icon: "UserOutlined",
     color: "#1890ff",
     value: await getUsersCountsRequest().then(
@@ -54,13 +53,13 @@ const statsData = [
     ),
   },
   {
-    title: "Tareas totales",
+    title: "Tareas Almacenadas",
     icon: "FileDoneOutlined",
     color: "#52c41a",
     value: await getTasksCountsRequest().then((res) => res.data.length),
   },
   {
-    title: "Nuevos registros hoy",
+    title: "Nuevos Usuarios Hoy",
     icon: "UserAddOutlined",
     color: "#eb2f96",
     value: await getUsersCountsRequest().then(
@@ -122,43 +121,6 @@ export default function Home() {
     if (e.key == 5) {
       setLogoutSure(true);
       setLoading(false);
-    }
-  };
-
-  const handleSend = async (values) => {
-    setLoading(true);
-    const res = await signin(values);
-
-    if (res) {
-      if (res.code == "ERR_NETWORK") {
-        setLoading(false);
-        return MySwal.fire({
-          icon: "error",
-          title: "Ups!",
-          text: "Error en el servidor, intenta más tarde.",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        });
-      }
-      setLoading(false);
-      MySwal.fire({
-        icon: "error",
-        title: "Ups!",
-        text: res.response.data,
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      });
-    } else {
-      setLoading(false);
-      await MySwal.fire({
-        icon: "success",
-        title: "Éxito!",
-        text: "Has iniciado sesión correctamente",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      }).then(() => {
-        navigate("/home");
-      });
     }
   };
 
@@ -317,7 +279,11 @@ export default function Home() {
               <Row gutter={[16, 16]} justify="start">
                 {statsData.map((stat, index) => (
                   <Col xs={24} sm={12} md={8} lg={6} key={index}>
-                    <Card bordered={false} style={{ minHeight: "150px" }}>
+                    <Card
+                      className="duration-150 hover:scale-105 hover:cursor-pointer"
+                      bordered={false}
+                      style={{ minHeight: "150px" }}
+                    >
                       <div className="flex flex-col items-center justify-center text-center h-full">
                         <div
                           style={{
