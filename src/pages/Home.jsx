@@ -35,6 +35,7 @@ export default function Home() {
   const [today, setToday] = useState("");
   const [expanded, setExpanded] = useState({});
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const { user, logout, updateInfo } = useAuth();
   const { tasks, getTasks, createTask, deleteTask } = useTasks();
@@ -96,6 +97,8 @@ export default function Home() {
       }).then((res) => closeModal());
     }
   };
+
+  const handleUpdateTask = () => {};
 
   const handleDeleteTask = (id) => {
     MySwal.fire({
@@ -163,6 +166,14 @@ export default function Home() {
     setLogoutSure(false);
   };
 
+  const showModal = () => {
+    setShowEditModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowEditModal(false);
+  };
+
   useEffect(() => {
     setToday(
       `${dayjs().year()}-${(dayjs().month() + 1)
@@ -193,7 +204,6 @@ export default function Home() {
             colorBorder: "white",
             activeBorderColor: "#947bcf",
             hoverBorderColor: "#947bcf",
-            borderRadius: 20,
           },
           Select: {
             activeBorderColor: "#947bcf",
@@ -307,10 +317,12 @@ export default function Home() {
                         <FaPencil
                           className="place-self-center mt-1 hover:text-[#d47da0]"
                           key="edit"
+                          onClick={showModal}
                         />,
                         <FaTrash
                           className="place-self-center mt-1 hover:text-[#d47da0]"
                           key="delete"
+                          onClick={() => handleDeleteTask(task.id)}
                         />,
                       ]}
                     >
@@ -362,6 +374,101 @@ export default function Home() {
               color: "#FFD6FF",
             }}
           />
+        }
+      />
+
+      <AntdModal
+        title="Editar Tarea"
+        open={showEditModal}
+        onCancel={handleCancel}
+        onOk={handleCancel}
+        btnCancel={"Cancelar"}
+        btnOk={"Guardar cambios"}
+        children={
+          <Form
+            name="editTask"
+            className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
+            layout="vertical"
+            autoComplete="off"
+            onFinish={handleUpdateTask}
+          >
+            <Form.Item
+              name="title"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Nombre de la tarea
+                </span>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor ingresa el nombre de la tarea",
+                },
+              ]}
+            >
+              <Input
+                placeholder="Nombre de la tarea"
+                className="text-gray-500 p-1.5 pl-4"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="descr"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Descripción (opcional)
+                </span>
+              }
+            >
+              <TextArea
+                placeholder="Descripción de la tarea"
+                className="max-h-[80px] text-gray-500 p-1.5 pl-4"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="priority"
+              initialValue={"media"}
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Selecciona la prioridad
+                </span>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor selecciona una prioridad",
+                },
+              ]}
+            >
+              <Select
+                placeholder="Selecciona la prioridad"
+                className="text-gray-500"
+                options={[
+                  { value: "baja", label: <span>Baja</span> },
+                  { value: "media", label: <span>Media</span> },
+                  { value: "alta", label: <span>Alta</span> },
+                ]}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="exp"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Fecha de expiración (opcional)
+                </span>
+              }
+            >
+              <DatePicker
+                className="w-full text-gray-500"
+                placeholder="Selecciona una fecha"
+                format="YYYY-MM-DD"
+                minDate={dayjs(today, "YYYY-MM-DD")}
+              />
+            </Form.Item>
+            <Button id="btn-edit-submit" htmlType="submit" hidden />
+          </Form>
         }
       />
 
@@ -537,7 +644,7 @@ export default function Home() {
             <Input.Password
               id="current-password"
               placeholder="Introduce tu contraseña actual"
-              className="text-gray-500 p-1.5 pl-4"
+              className="text-gray-500 p-1.5 pl-4 pr-5"
             />
           </Form.Item>
 
@@ -551,7 +658,7 @@ export default function Home() {
             <Input.Password
               id="new-password"
               placeholder="Introduce una nueva contraseña"
-              className="text-gray-500 p-1.5 pl-4"
+              className="text-gray-500 p-1.5 pl-4 pr-5"
             />
           </Form.Item>
 
@@ -565,7 +672,7 @@ export default function Home() {
             <Input.Password
               id="confirm-password"
               placeholder="Confirma tu nueva contraseña"
-              className="text-gray-500 p-1.5 pl-4"
+              className="text-gray-500 p-1.5 pl-4 pr-5"
             />
           </Form.Item>
         </Form>
