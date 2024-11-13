@@ -348,7 +348,7 @@ export default function Home() {
             </h1>
           </Header>
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
-            <div className="w-full max-w-screen-lg px-4 lg:px-0 py-4">
+            <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0 py-4">
               <Row gutter={[16, 16]} justify="start">
                 {tasks.map((task) => (
                   <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
