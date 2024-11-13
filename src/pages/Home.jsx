@@ -16,9 +16,17 @@ import {
   Button,
   Row,
   Col,
+  Divider,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { FaIdCard, FaKey, FaPlus, FaPencil, FaTrash } from "react-icons/fa6";
+import {
+  FaIdCard,
+  FaKey,
+  FaPlus,
+  FaPencil,
+  FaTrash,
+  FaCircleCheck,
+} from "react-icons/fa6";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import AntdModal from "../components/AntdModal";
@@ -40,7 +48,8 @@ export default function Home() {
   const [isTaskMod, setIsTaskMod] = useState(false);
 
   const { user, logout, updateInfo, changePassw } = useAuth();
-  const { tasks, getTasks, createTask, deleteTask, updateTask } = useTasks();
+  const { tasks, getTasks, createTask, deleteTask, updateTask, completeTask } =
+    useTasks();
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
@@ -85,7 +94,7 @@ export default function Home() {
         text: "Has creado una tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      });
+      }).then(() => navigate(0));
     }
     setLoading(false);
     MySwal.fire({
@@ -116,7 +125,7 @@ export default function Home() {
         text: "Has modificado esta tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      });
+      }).then(() => navigate(0));
     }
     setLoading(false);
     MySwal.fire({
@@ -149,6 +158,17 @@ export default function Home() {
           confirmButtonColor: "#e299b6",
         });
       }
+    });
+  };
+
+  const handleCompleteTask = async (task) => {
+    await completeTask(task);
+    MySwal.fire({
+      title: "Genial!",
+      text: "Has marcado esta tarea como completada.",
+      icon: "success",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
     });
   };
 
@@ -237,7 +257,8 @@ export default function Home() {
 
   useEffect(() => {
     getTasks();
-  }, [tasks]);
+    console.log(tasks);
+  }, []);
 
   useEffect(() => {
     form.setFieldsValue(taskValues);
@@ -356,13 +377,17 @@ export default function Home() {
             </h1>
           </Header>
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
-            <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0 py-4">
+            <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0">
+              <h2 className="text-3xl text-white w-full text-center pb-5">
+                Tareas Pendientes
+              </h2>
               <Row gutter={[16, 16]} justify="start">
                 {tasks
                   .sort(
                     (a, b) =>
                       prioridadOrden[a.priority] - prioridadOrden[b.priority]
                   )
+                  .filter((task) => task.state === "pendiente")
                   .map((task) => (
                     <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
                       <Card
@@ -379,11 +404,95 @@ export default function Home() {
                         bordered={false}
                         className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
                         actions={[
+                          <FaCircleCheck
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            key="complete"
+                            onClick={() => handleCompleteTask(task)}
+                          />,
                           <FaPencil
                             className="place-self-center mt-1 hover:text-[#d47da0] w-full"
                             key="edit"
                             onClick={() => handleEditModal(task)}
                           />,
+                          <FaTrash
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            key="delete"
+                            onClick={() => handleDeleteTask(task.id)}
+                          />,
+                        ]}
+                      >
+                        {task.descr ? (
+                          <div className="px-4 text-gray-700 mb-5">
+                            <div className="relative">
+                              <p
+                                className={`${
+                                  expanded[task.id] ? "" : "line-clamp-1"
+                                } break-words`}
+                              >
+                                {task.descr}
+                              </p>
+                              {task.descr.length > 100 && (
+                                <button
+                                  className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
+                                  onClick={() => toggleDescription(task.id)}
+                                >
+                                  {expanded[task.id] ? "Ver menos" : "Ver más"}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="px-4 text-gray-700 mb-5">
+                            <p className="italic text-gray-500">
+                              Sin descripción
+                            </p>
+                          </div>
+                        )}
+                      </Card>
+                    </Col>
+                  ))}
+                {tasks.find((task) => task.state === "completada") && (
+                  <>
+                    <Divider />
+                    <h2 className="text-3xl text-white w-full text-center pb-5">
+                      Tareas Completadas
+                    </h2>
+                  </>
+                )}
+                {tasks
+                  .sort(
+                    (a, b) =>
+                      prioridadOrden[a.priority] - prioridadOrden[b.priority]
+                  )
+                  .filter((task) => task.state === "completada")
+                  .map((task) => (
+                    <Col
+                      className="mb-5"
+                      xs={24}
+                      sm={12}
+                      md={8}
+                      lg={6}
+                      key={task.id}
+                    >
+                      <Card
+                        title={
+                          <h2 className="text-lg font-semibold text-white">
+                            {task.title}
+                          </h2>
+                        }
+                        extra={
+                          <span className="text-xs text-[#a35776] pl-5">
+                            {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                          </span>
+                        }
+                        bordered={false}
+                        className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
+                        actions={[
+                          // <FaPencil
+                          //   className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                          //   key="edit"
+                          //   onClick={() => handleEditModal(task)}
+                          // />,
                           <FaTrash
                             className="place-self-center mt-1 hover:text-[#d47da0] w-full"
                             key="delete"

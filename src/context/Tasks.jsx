@@ -4,6 +4,7 @@ import {
   createTaskRequest,
   updateTaskRequest,
   deleteTaskRequest,
+  completeTaskRequest,
 } from "../api/tasks";
 
 const TaskContext = createContext();
@@ -21,6 +22,7 @@ export const TaskProvider = ({ children }) => {
   const getTasks = async () => {
     const res = await getTasksRequest();
     setTasks(res.data);
+    return res.data;
   };
 
   const createTask = async (task) => {
@@ -52,6 +54,16 @@ export const TaskProvider = ({ children }) => {
     }
   };
 
+  const completeTask = async (task) => {
+    try {
+      const res = await completeTaskRequest(task);
+      if (res.status === 200) setTasks(tasks.filter((t) => t !== task));
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -60,6 +72,7 @@ export const TaskProvider = ({ children }) => {
         createTask,
         updateTask,
         deleteTask,
+        completeTask,
       }}
     >
       {children}
