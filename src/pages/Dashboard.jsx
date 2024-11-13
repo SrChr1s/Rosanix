@@ -11,17 +11,62 @@ import {
   Input,
   Select,
   DatePicker,
+  Card,
+  Row,
+  Col,
+  Statistic,
 } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
+import {
+  LoadingOutlined,
+  UserOutlined,
+  FileDoneOutlined,
+  MessageOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+import { FaIdCard, FaKey, FaPlus, FaHouse } from "react-icons/fa6";
 import AntdModal from "../components/AntdModal";
 const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
+
+const statsData = [ // BORRAR
+  {
+    title: "Usuarios activos",
+    icon: "UserOutlined",
+    color: "#1890ff",
+    value: 150,
+  },
+  {
+    title: "Tareas totales",
+    icon: "FileDoneOutlined",
+    color: "#52c41a",
+    value: 320,
+  },
+  {
+    title: "Comentarios pendientes",
+    icon: "MessageOutlined",
+    color: "#faad14",
+    value: 45,
+  },
+  {
+    title: "Nuevos registros hoy",
+    icon: "UserAddOutlined",
+    color: "#eb2f96",
+    value: 25,
+  },
+];
+
+const iconMap = {
+  UserOutlined: <UserOutlined />,
+  FileDoneOutlined: <FileDoneOutlined />,
+  MessageOutlined: <MessageOutlined />,
+  UserAddOutlined: <UserAddOutlined />,
+};
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [newTask, setNewTask] = useState(false);
+  const [home, setHome] = useState(false);
   const [myData, setMyData] = useState(false);
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -35,16 +80,21 @@ export default function Home() {
     setLoading(true);
 
     if (e.key == 1) {
-      setNewTask(true);
+      setHome(true);
       setLoading(false);
     }
 
     if (e.key == 2) {
-      setMyData(true);
+      setNewTask(true);
       setLoading(false);
     }
 
     if (e.key == 3) {
+      setMyData(true);
+      setLoading(false);
+    }
+
+    if (e.key == 4) {
       setLogoutSure(true);
       setLoading(false);
     }
@@ -143,12 +193,12 @@ export default function Home() {
         },
       }}
     >
-      <Layout className="overflow-hidden">
+      <Layout className="overflow-hidden min-h-screen bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
         <Sider
           collapsible
           collapsed={isOpen}
           onCollapse={() => setIsOpen(!isOpen)}
-          className="h-dvh bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"
+          className="fixed min-h-screen inset-0 overflow-auto top-0 bottom-0 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"
           width={230}
         >
           {isOpen && (
@@ -176,6 +226,16 @@ export default function Home() {
             items={[
               {
                 key: 1,
+                icon: <FaHouse />,
+                label: "Inicio",
+                className: "text-sm drop-shadow-sm",
+                style: {
+                  color: "white",
+                  margin: "24px 0",
+                },
+              },
+              {
+                key: 2,
                 icon: <FaPlus />,
                 label: "Nueva Tarea",
                 className: "text-sm drop-shadow-sm",
@@ -186,7 +246,7 @@ export default function Home() {
               },
 
               {
-                key: 2,
+                key: 3,
                 icon: <FaIdCard />,
                 label: "Mis Datos",
                 className: "text-sm drop-shadow-sm",
@@ -196,7 +256,7 @@ export default function Home() {
                 },
               },
               {
-                key: 3,
+                key: 4,
                 icon: <FaKey />,
                 label: "Cerrar Sesión",
                 className: "text-sm drop-shadow-sm",
@@ -208,13 +268,40 @@ export default function Home() {
             ]}
           />
         </Sider>
-        <Layout>
-          <Header className="flex items-center w-dvw pl-5 text-white bg-[#a5caf5]">
+        <Layout
+          className={`${
+            isOpen ? "ml-[80px]" : "ml-[230px]"
+          } transition-all duration-300`}
+        >
+          <Header className="flex items-center w-screen pl-5 text-white bg-[#a5caf5]">
             <h1 className="text-xl sm:text-3xl font-[Nunito]">
               Hola, {user ? user.name : "usuario"}!
             </h1>
           </Header>
-          <Content className="bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]"></Content>
+          <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
+            <div className="w-full max-w-screen-lg px-4 lg:px-0 py-4">
+              <Row gutter={[16, 16]} justify="start">
+                {statsData.map((stat, index) => (
+                  <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                    <Card bordered={false} style={{ minHeight: "150px" }}>
+                      <div className="flex flex-col items-center justify-center text-center h-full">
+                        <div
+                          style={{
+                            fontSize: "36px",
+                            color: stat.color,
+                            marginBottom: "10px",
+                          }}
+                        >
+                          {iconMap[stat.icon]}
+                        </div>
+                        <Statistic title={stat.title} value={stat.value} />
+                      </div>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          </Content>
           <Footer className="bg-[#bbacdf]"></Footer>
         </Layout>
       </Layout>
