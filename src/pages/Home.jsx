@@ -626,7 +626,7 @@ export default function Home() {
             </Form.Item>
 
             <Form.Item
-              name="exp"
+              name="expiresIn"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Fecha de expiración (opcional)
