@@ -23,12 +23,19 @@ import {
   MessageOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { FaIdCard, FaKey, FaPlus, FaHouse } from "react-icons/fa6";
+import {
+  FaIdCard,
+  FaKey,
+  FaHouse,
+  FaUserPlus,
+  FaUserGroup,
+} from "react-icons/fa6";
 import AntdModal from "../components/AntdModal";
 const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
 
-const statsData = [ // BORRAR
+const statsData = [
+  // BORRAR
   {
     title: "Usuarios activos",
     icon: "UserOutlined",
@@ -65,8 +72,9 @@ const iconMap = {
 export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [newTask, setNewTask] = useState(false);
   const [home, setHome] = useState(false);
+  const [newUser, setNewUser] = useState(false);
+  const [users, setUsers] = useState(false);
   const [myData, setMyData] = useState(false);
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -85,16 +93,21 @@ export default function Home() {
     }
 
     if (e.key == 2) {
-      setNewTask(true);
+      setNewUser(true);
       setLoading(false);
     }
 
     if (e.key == 3) {
-      setMyData(true);
+      setUsers(true);
       setLoading(false);
     }
 
     if (e.key == 4) {
+      setMyData(true);
+      setLoading(false);
+    }
+
+    if (e.key == 5) {
       setLogoutSure(true);
       setLoading(false);
     }
@@ -150,7 +163,7 @@ export default function Home() {
   };
 
   const closeModal = () => {
-    setNewTask(false);
+    setNewUser(false);
     setMyData(false);
     setLogoutSure(false);
   };
@@ -236,17 +249,26 @@ export default function Home() {
               },
               {
                 key: 2,
-                icon: <FaPlus />,
-                label: "Nueva Tarea",
+                icon: <FaUserPlus />,
+                label: "Nuevo Usuario",
                 className: "text-sm drop-shadow-sm",
                 style: {
                   color: "white",
                   margin: "24px 0",
                 },
               },
-
               {
                 key: 3,
+                icon: <FaUserGroup />,
+                label: "Ver Usuarios",
+                className: "text-sm drop-shadow-sm",
+                style: {
+                  color: "white",
+                  margin: "24px 0",
+                },
+              },
+              {
+                key: 4,
                 icon: <FaIdCard />,
                 label: "Mis Datos",
                 className: "text-sm drop-shadow-sm",
@@ -256,7 +278,7 @@ export default function Home() {
                 },
               },
               {
-                key: 4,
+                key: 5,
                 icon: <FaKey />,
                 label: "Cerrar Sesión",
                 className: "text-sm drop-shadow-sm",
@@ -279,7 +301,7 @@ export default function Home() {
             </h1>
           </Header>
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
-            <div className="w-full max-w-screen-lg px-4 lg:px-0 py-4">
+            <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0 py-4">
               <Row gutter={[16, 16]} justify="start">
                 {statsData.map((stat, index) => (
                   <Col xs={24} sm={12} md={8} lg={6} key={index}>
@@ -320,8 +342,8 @@ export default function Home() {
       />
 
       <AntdModal
-        title="Nueva Tarea"
-        open={newTask}
+        title="Nuevo usuario"
+        open={newUser}
         onCancel={closeModal}
         btnCancel={"Cancelar"}
         btnOk={"Crear"}
@@ -338,77 +360,110 @@ export default function Home() {
             }
           >
             <Form.Item
-              name="title"
+              name="name"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
-                  Nombre de la tarea
+                  Nombre
                 </span>
               }
               rules={[
-                {
-                  required: true,
-                  message: "Por favor ingresa el nombre de la tarea",
-                },
+                { required: true, message: "Este campo es requerido" },
+                { min: 3, message: "Debe tener al menos 3 caracteres" },
+                { max: 25, message: "No puede sobrepasar los 25 caracteres" },
               ]}
             >
               <Input
-                placeholder="Nombre de la tarea"
+                placeholder="Nombre del usuario"
+                id="name"
                 className="text-gray-500 p-1.5 pl-4"
               />
             </Form.Item>
 
             <Form.Item
-              name="descr"
+              name="email"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
-                  Descripción (opcional)
+                  Email
                 </span>
               }
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { type: "email", message: "No es un email válido" },
+                { max: 100, message: "No puede sobrepasar los 100 caracteres" },
+              ]}
             >
-              <TextArea
-                placeholder="Descripción de la tarea"
-                className="max-h-[80px] text-gray-500 p-1.5 pl-4"
+              <Input
+                placeholder="correo@email.com"
+                id="email"
+                className="text-gray-500 p-1.5 pl-4"
               />
             </Form.Item>
 
             <Form.Item
-              name="priority"
+              name="passw"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
-                  Selecciona la prioridad
+                  Contraseña
+                </span>
+              }
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { min: 8, message: "Debe tener al menos 8 caracteres" },
+              ]}
+            >
+              <Input.Password
+                placeholder="thebestpassword123"
+                id="passw"
+                className="text-gray-500 p-1.5 pl-4 pr-2"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="role"
+              label={
+                <span className="text-white font-[Nunito] font-semibold select-none">
+                  Seleccione el rol
                 </span>
               }
               rules={[
                 {
                   required: true,
-                  message: "Por favor selecciona una prioridad",
+                  message: "Por favor selecciona un rol",
                 },
               ]}
             >
               <Select
-                placeholder="Selecciona la prioridad"
+                placeholder="Selecciona el rol"
                 className="text-gray-500"
                 options={[
-                  { value: "baja", label: <span>Baja</span> },
-                  { value: "media", label: <span>Media</span> },
-                  { value: "alta", label: <span>Alta</span> },
+                  { value: "usuario", label: <span>Usuario</span> },
+                  { value: "admin", label: <span>Administrador</span> },
                 ]}
               />
             </Form.Item>
 
             <Form.Item
-              name="expiresIn"
+              name="active"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
-                  Fecha de expiración (opcional)
+                  Activo
                 </span>
               }
+              rules={[
+                {
+                  required: true,
+                  message:
+                    "Por favor selecciona si la cuenta está activa o no.",
+                },
+              ]}
             >
-              <DatePicker
-                className="w-full text-gray-500"
-                placeholder="Selecciona una fecha"
-                format="YYYY-MM-DD"
-                minDate={dayjs(today, "YYYY-MM-DD")}
+              <Select
+                placeholder="Activo"
+                className="text-gray-500"
+                options={[
+                  { value: "1", label: <span>Sí</span> },
+                  { value: "0", label: <span>No</span> },
+                ]}
               />
             </Form.Item>
           </Form>
