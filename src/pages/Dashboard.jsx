@@ -31,6 +31,7 @@ import {
   FaUserGroup,
 } from "react-icons/fa6";
 import AntdModal from "../components/AntdModal";
+import { getUsersCountsRequest, getTasksCountsRequest } from "../api/admin";
 const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
 
@@ -40,25 +41,36 @@ const statsData = [
     title: "Usuarios activos",
     icon: "UserOutlined",
     color: "#1890ff",
-    value: 150,
+    value: await getUsersCountsRequest().then(
+      (res) => res.data.filter((u) => u.active).length
+    ),
+  },
+  {
+    title: "Usuarios Inactivos",
+    icon: "UserOutlined",
+    color: "red",
+    value: await getUsersCountsRequest().then(
+      (res) => res.data.filter((u) => !u.active).length
+    ),
   },
   {
     title: "Tareas totales",
     icon: "FileDoneOutlined",
     color: "#52c41a",
-    value: 320,
-  },
-  {
-    title: "Comentarios pendientes",
-    icon: "MessageOutlined",
-    color: "#faad14",
-    value: 45,
+    value: await getTasksCountsRequest().then((res) => res.data.length),
   },
   {
     title: "Nuevos registros hoy",
     icon: "UserAddOutlined",
     color: "#eb2f96",
-    value: 25,
+    value: await getUsersCountsRequest().then(
+      (res) =>
+        res.data.filter(
+          (u) =>
+            dayjs(u.createdAt).format("DD/MM/YYYY") ===
+            dayjs().format("DD/MM/YYYY")
+        ).length
+    ),
   },
 ];
 

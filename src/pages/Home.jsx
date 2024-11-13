@@ -225,9 +225,6 @@ export default function Home() {
         .toString()
         .padStart(2, "0")}-${dayjs().date().toString().padStart(2, "0")}`
     );
-  }, []);
-
-  useEffect(() => {
     getTasks();
   }, []);
 
