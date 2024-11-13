@@ -128,8 +128,6 @@ export default function Home() {
     setLogoutSure(false);
     setLoading(true);
     await logout();
-    setLoading(false);
-    navigate("/");
   };
 
   const handleEditToggle = () => {

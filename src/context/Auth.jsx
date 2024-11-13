@@ -6,7 +6,7 @@ import {
   verTokenRequest,
 } from "../api/auth";
 import Cookies from "js-cookie";
-import { updateInfoRequest } from "../api/users";
+import { updateInfoRequest, updatePasswRequest } from "../api/users";
 
 export const AuthContext = createContext();
 
@@ -64,6 +64,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassw = async (passws) => {
+    try {
+      const res = await updatePasswRequest(passws);
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     async function checkLogin() {
       const cookies = Cookies.get();
@@ -101,6 +110,7 @@ export const AuthProvider = ({ children }) => {
         signup,
         logout,
         updateInfo,
+        changePassw,
         isAuth,
         loading,
         errors,

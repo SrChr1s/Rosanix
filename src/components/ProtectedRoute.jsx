@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
-export default function ProtectedRoute({ active, role, fallback = "/login" }) {
+export default function ProtectedRoute({ role, fallback = "/login" }) {
   const { loading, isAuth, user } = useAuth();
 
   if (loading)

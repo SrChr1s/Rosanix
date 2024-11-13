@@ -39,13 +39,19 @@ export default function Home() {
   const [taskValues, setTaskValues] = useState({});
   const [isTaskMod, setIsTaskMod] = useState(false);
 
-  const { user, logout, updateInfo } = useAuth();
+  const { user, logout, updateInfo, changePassw } = useAuth();
   const { tasks, getTasks, createTask, deleteTask, updateTask } = useTasks();
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
 
   const MySwal = withReactContent(Swal);
+
+  const prioridadOrden = {
+    baja: 3,
+    media: 2,
+    alta: 1,
+  };
 
   const handleMenuClick = async (e) => {
     setLoading(true);
@@ -170,31 +176,52 @@ export default function Home() {
     setLogoutSure(false);
     setLoading(true);
     await logout();
-    setLoading(false);
-    navigate("/");
   };
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = (values) => {
     handleEditToggle();
     closeModal();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      updateInfo({
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-      });
-      navigate(0);
-    }, 1000);
+    if (user.email !== values.email) {
+      return MySwal.fire({
+        icon: "info",
+        title: "Espera!",
+        text: "Revisa la bandeja de entrada del nuevo correo para validarlo y poder realizar el cambio",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then((res) => navigate(0));
+    }
+    updateInfo({
+      name: values.name,
+      email: values.email,
+    });
+    navigate(0);
   };
 
-  const handlePasswordChange = () => {
-    // manejar el cambio de contraseña
-    setShowPasswordModal(false);
+  const handlePasswordChange = async (values) => {
+    setLoading(true);
+    const res = await changePassw(values);
+    if (res.status == 200) {
+      setLoading(false);
+      return MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Has cambiado tu contraseña con éxito!",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => closeModal());
+    }
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    }).then(() => closeModal());
   };
 
   const toggleDescription = (taskId) => {
@@ -209,6 +236,7 @@ export default function Home() {
     setMyData(false);
     setLogoutSure(false);
     setShowEditModal(false);
+    setShowPasswordModal(false);
   };
 
   const handleEditModal = (task) => {
@@ -347,64 +375,69 @@ export default function Home() {
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
             <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0 py-4">
               <Row gutter={[16, 16]} justify="start">
-                {tasks.map((task) => (
-                  <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
-                    <Card
-                      title={
-                        <h2 className="text-lg font-semibold text-white">
-                          {task.title}
-                        </h2>
-                      }
-                      extra={
-                        <span className="text-xs text-[#a35776] pl-5">
-                          {dayjs(task.createdAt).format("DD/MM/YYYY")}
-                        </span>
-                      }
-                      bordered={false}
-                      className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
-                      actions={[
-                        <FaPencil
-                          className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                          key="edit"
-                          onClick={() => handleEditModal(task)}
-                        />,
-                        <FaTrash
-                          className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                          key="delete"
-                          onClick={() => handleDeleteTask(task.id)}
-                        />,
-                      ]}
-                    >
-                      {task.descr ? (
-                        <div className="px-4 text-gray-700 mb-5">
-                          <div className="relative">
-                            <p
-                              className={`${
-                                expanded[task.id] ? "" : "line-clamp-1"
-                              } break-words`}
-                            >
-                              {task.descr}
-                            </p>
-                            {task.descr.length > 100 && (
-                              <button
-                                className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
-                                onClick={() => toggleDescription(task.id)}
+                {tasks
+                  .sort(
+                    (a, b) =>
+                      prioridadOrden[a.priority] - prioridadOrden[b.priority]
+                  )
+                  .map((task) => (
+                    <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
+                      <Card
+                        title={
+                          <h2 className="text-lg font-semibold text-white">
+                            {task.title}
+                          </h2>
+                        }
+                        extra={
+                          <span className="text-xs text-[#a35776] pl-5">
+                            {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                          </span>
+                        }
+                        bordered={false}
+                        className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
+                        actions={[
+                          <FaPencil
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            key="edit"
+                            onClick={() => handleEditModal(task)}
+                          />,
+                          <FaTrash
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            key="delete"
+                            onClick={() => handleDeleteTask(task.id)}
+                          />,
+                        ]}
+                      >
+                        {task.descr ? (
+                          <div className="px-4 text-gray-700 mb-5">
+                            <div className="relative">
+                              <p
+                                className={`${
+                                  expanded[task.id] ? "" : "line-clamp-1"
+                                } break-words`}
                               >
-                                {expanded[task.id] ? "Ver menos" : "Ver más"}
-                              </button>
-                            )}
+                                {task.descr}
+                              </p>
+                              {task.descr.length > 100 && (
+                                <button
+                                  className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
+                                  onClick={() => toggleDescription(task.id)}
+                                >
+                                  {expanded[task.id] ? "Ver menos" : "Ver más"}
+                                </button>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="px-4 text-gray-700 mb-5">
-                          <p className="italic text-gray-500">
-                            Sin descripción
-                          </p>
-                        </div>
-                      )}
-                    </Card>
-                  </Col>
-                ))}
+                        ) : (
+                          <div className="px-4 text-gray-700 mb-5">
+                            <p className="italic text-gray-500">
+                              Sin descripción
+                            </p>
+                          </div>
+                        )}
+                      </Card>
+                    </Col>
+                  ))}
               </Row>
             </div>
           </Content>
@@ -626,7 +659,11 @@ export default function Home() {
         title="Mis Datos"
         open={myData}
         onCancel={isEditing ? handleEditToggle : closeModal}
-        onOk={isEditing ? handleSaveProfile : handleEditToggle}
+        onOk={() =>
+          isEditing
+            ? document.getElementById("btn-change-info").click()
+            : handleEditToggle()
+        }
         btnCancel={isEditing ? "Cancelar" : "Cerrar"}
         btnOk={isEditing ? "Guardar" : "Editar"}
         children={
@@ -634,8 +671,11 @@ export default function Home() {
             layout="vertical"
             className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             autoComplete="off"
+            initialValues={user}
+            onFinish={handleSaveProfile}
           >
             <Form.Item
+              name="name"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Nombre
@@ -647,11 +687,11 @@ export default function Home() {
                 placeholder="Nombre de usuario"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
-                defaultValue={user.name}
               />
             </Form.Item>
 
             <Form.Item
+              name="email"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Email
@@ -668,15 +708,19 @@ export default function Home() {
                 placeholder="Correo electrónico"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
-                defaultValue={user.email}
               />
             </Form.Item>
             <Button
               className="mt-4 rounded-full bg-[#bbacdf] text-white font-semibold"
-              onClick={() => setShowPasswordModal(true)}
+              onClick={() => {
+                closeModal();
+                setShowPasswordModal(true);
+              }}
+              hidden={isEditing}
             >
               Cambiar contraseña
             </Button>
+            <Button id="btn-change-info" htmlType="submit" hidden />
           </Form>
         }
       />
@@ -684,8 +728,8 @@ export default function Home() {
       <AntdModal
         title="Cambiar Contraseña"
         open={showPasswordModal}
-        onCancel={() => setShowPasswordModal(false)}
-        onOk={handlePasswordChange}
+        onCancel={closeModal}
+        onOk={() => document.getElementById("btn-change-pass").click()}
         btnCancel="Cancelar"
         btnOk="Guardar"
       >
@@ -693,54 +737,75 @@ export default function Home() {
           layout="vertical"
           className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
           autoComplete="off"
+          onFinish={handlePasswordChange}
         >
           <Form.Item
+            name="currentPassw"
             label={
               <span className="text-white font-[Nunito] font-semibold select-none">
                 Contraseña Actual
               </span>
             }
             rules={[
-              { required: true, message: "Por favor ingresa tu contraseña actual" },
+              { required: true, message: "Este campo es requerido" },
+              { min: 8, message: "Debe tener al menos 8 caracteres" },
             ]}
           >
             <Input.Password
-              id="current-password"
+              id="currentPassw"
               placeholder="Introduce tu contraseña actual"
               className="text-gray-500 p-1.5 pl-4 pr-5"
             />
           </Form.Item>
 
           <Form.Item
+            name="newPassw"
             label={
               <span className="text-white font-[Nunito] font-semibold select-none">
-                Contraseña Nueva
+                Nueva contraseña
               </span>
             }
             rules={[
-              { required: true, message: "Por favor ingresa una nueva contraseña" },
+              { required: true, message: "Este campo es requerido" },
+              { min: 8, message: "Debe tener al menos 8 caracteres" },
             ]}
           >
             <Input.Password
-              id="new-password"
+              id="newPassw"
               placeholder="Introduce una nueva contraseña"
               className="text-gray-500 p-1.5 pl-4 pr-5"
             />
           </Form.Item>
 
           <Form.Item
+            name="cNewPassw"
             label={
               <span className="text-white font-[Nunito] font-semibold select-none">
-                Confirmar Contraseña
+                Confirmar nueva contraseña
               </span>
             }
+            validateFirst
+            dependencies={["newPassw"]}
+            rules={[
+              { required: true, message: "Este campo es requerido" },
+              { min: 8, message: "Debe tener al menos 8 caracteres" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("newPassw") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Su contraseña no coincide"));
+                },
+              }),
+            ]}
           >
             <Input.Password
-              id="confirm-password"
+              id="cNewPassw"
               placeholder="Confirma tu nueva contraseña"
               className="text-gray-500 p-1.5 pl-4 pr-5"
             />
           </Form.Item>
+          <Button id="btn-change-pass" htmlType="submit" hidden />
         </Form>
       </AntdModal>
 
