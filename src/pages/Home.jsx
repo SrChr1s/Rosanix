@@ -97,7 +97,7 @@ export default function Home() {
         text: "Has creado una tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then((res) => closeModal());
+      }).then((res) => navigate(0));
     }
   };
 
@@ -105,8 +105,10 @@ export default function Home() {
     setLoading(true);
     const res = await updateTask({
       ...values,
-      expiresIn: dayjs(values.expiresIn).format("YYYY-MM-DDTHH:mm:ss.sss[Z]"),
-      descr: values.descr ? values.descr : "",
+      expiresIn: values.expiresIn
+        ? dayjs(values.expiresIn).format("YYYY-MM-DDTHH:mm:ss.sss[Z]")
+        : "",
+      descr: values.descr ? values.descr.trim() : "",
     });
 
     if (res) {
@@ -352,14 +354,14 @@ export default function Home() {
                   <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
                     <Card
                       title={
-                        <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-semibold text-white">
-                            {task.title}
-                          </h2>
-                          <span className="text-xs text-[#a35776]">
-                            {dayjs(task.createdAt).format("DD/MM/YYYY")}
-                          </span>
-                        </div>
+                        <h2 className="text-lg font-semibold text-white">
+                          {task.title}
+                        </h2>
+                      }
+                      extra={
+                        <span className="text-xs text-[#a35776] pl-5">
+                          {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                        </span>
                       }
                       bordered={false}
                       className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
