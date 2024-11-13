@@ -5,12 +5,12 @@ import { LoadingOutlined } from "@ant-design/icons";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
 const DashboardLazy = lazy(() => import("./pages/Dashboard"));
+const HomeLazy = lazy(() => import("./pages/Home"));
 
 function App() {
   return (
@@ -23,7 +23,30 @@ function App() {
       </Route>
 
       <Route element={<ProtectedRoute role="usuario" fallback="/login" />}>
-        <Route path="/home" element={<Home />} />
+        <Route
+          path="/home"
+          element={
+            <Suspense
+              fallback={
+                <Spin
+                  spinning={true}
+                  fullscreen
+                  indicator={
+                    <LoadingOutlined
+                      spin
+                      style={{
+                        fontSize: 80,
+                        color: "#FFD6FF",
+                      }}
+                    />
+                  }
+                />
+              }
+            >
+              <HomeLazy />
+            </Suspense>
+          }
+        />
       </Route>
 
       <Route element={<ProtectedRoute role="admin" fallback="/notfound" />}>
