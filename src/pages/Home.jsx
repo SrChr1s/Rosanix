@@ -33,6 +33,7 @@ export default function Home() {
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [today, setToday] = useState("");
+  const [expanded, setExpanded] = useState({});
 
   const { user, logout, updateInfo } = useAuth();
   const { tasks, getTasks, createTask, deleteTask } = useTasks();
@@ -141,6 +142,13 @@ export default function Home() {
       });
       navigate(0);
     }, 1000);
+  };
+
+  const toggleDescription = (taskId) => {
+    setExpanded((prevState) => ({
+      ...prevState,
+      [taskId]: !prevState[taskId], 
+    }));
   };
 
   const closeModal = () => {
@@ -287,7 +295,7 @@ export default function Home() {
                         </div>
                       }
                       bordered={false}
-                      className="w-full flex flex-col justify-between min-h-[200px] shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
+                      className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
                       actions={[
                         <FaPencil
                           className="place-self-center mt-1 hover:text-[#d47da0]"
@@ -296,19 +304,43 @@ export default function Home() {
                         <FaTrash
                           className="place-self-center mt-1 hover:text-[#d47da0]"
                           key="delete"
-                          onClick={() => handleDeleteTask(task.id)}
                         />,
                       ]}
                     >
                       {task.descr ? (
-                        <p className="px-4 text-gray-700 mb-5">{task.descr}</p>
-                      ) : null}
+                        <div className="px-4 text-gray-700 mb-5">
+                          <div className="relative">
+                            <p
+                              className={`${
+                                expanded[task.id] ? "" : "line-clamp-1"
+                              } break-words`}
+                            >
+                              {task.descr}
+                            </p>
+                            {task.descr.length > 100 && (
+                              <button
+                                className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
+                                onClick={() => toggleDescription(task.id)}
+                              >
+                                {expanded[task.id] ? "Ver menos" : "Ver más"}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="px-4 text-gray-700 mb-5">
+                          <p className="italic text-gray-500">
+                            Sin descripción
+                          </p>
+                        </div>
+                      )}
                     </Card>
                   </Col>
                 ))}
               </Row>
             </div>
           </Content>
+          
           <Footer className="bg-[#bbacdf]"></Footer>
         </Layout>
       </Layout>
