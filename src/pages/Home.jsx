@@ -613,6 +613,7 @@ export default function Home() {
               }
             >
               <DatePicker
+                onChange={() => setIsTaskMod(true)}
                 className="w-full text-gray-500"
                 placeholder="Selecciona una fecha"
                 format="YYYY-MM-DD"
