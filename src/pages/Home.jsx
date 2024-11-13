@@ -76,35 +76,25 @@ export default function Home() {
     setLoading(true);
     const res = await createTask(values);
 
-    if (res) {
-      if (res.code == "ERR_NETWORK") {
-        setLoading(false);
-        return MySwal.fire({
-          icon: "error",
-          title: "Ups!",
-          text: "Error en el servidor, intenta más tarde.",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        });
-      }
+    if (res.status === 200) {
+      closeModal();
       setLoading(false);
-      MySwal.fire({
-        icon: "error",
-        title: "Ups!",
-        text: res.response.data,
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      });
-    } else {
-      setLoading(false);
-      await MySwal.fire({
+      return MySwal.fire({
         icon: "success",
         title: "Éxito!",
         text: "Has creado una tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then((res) => navigate(0));
+      });
     }
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    });
   };
 
   const handleUpdateTask = async (values) => {
@@ -117,35 +107,25 @@ export default function Home() {
       descr: values.descr ? values.descr.trim() : "",
     });
 
-    if (res) {
-      if (res.code == "ERR_NETWORK") {
-        setLoading(false);
-        return MySwal.fire({
-          icon: "error",
-          title: "Ups!",
-          text: "Error en el servidor, intenta más tarde.",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        });
-      }
+    if (res.status === 200) {
+      closeModal();
       setLoading(false);
-      MySwal.fire({
-        icon: "error",
-        title: "Ups!",
-        text: res.response.data,
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      });
-    } else {
-      setLoading(false);
-      await MySwal.fire({
+      return MySwal.fire({
         icon: "success",
         title: "Éxito!",
         text: "Has modificado esta tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then((res) => navigate(0));
+      });
     }
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    });
   };
 
   const handleDeleteTask = (id) => {
@@ -253,8 +233,11 @@ export default function Home() {
         .toString()
         .padStart(2, "0")}-${dayjs().date().toString().padStart(2, "0")}`
     );
-    getTasks();
   }, []);
+
+  useEffect(() => {
+    getTasks();
+  }, [tasks]);
 
   useEffect(() => {
     form.setFieldsValue(taskValues);

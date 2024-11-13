@@ -27,6 +27,7 @@ export const TaskProvider = ({ children }) => {
     try {
       const res = await createTaskRequest(task);
       setTasks((prevTasks) => [...prevTasks, res.data]);
+      return res;
     } catch (err) {
       console.log(err);
     }
@@ -45,6 +46,7 @@ export const TaskProvider = ({ children }) => {
     try {
       const res = await updateTaskRequest(task);
       if (res.status === 200) setTasks(tasks.filter((t) => t !== task));
+      return res;
     } catch (err) {
       console.log(err);
     }
