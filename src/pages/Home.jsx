@@ -657,6 +657,11 @@ export default function Home() {
                   Email
                 </span>
               }
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { type: "email", message: "No es un email válido" },
+                { max: 100, message: "No puede sobrepasar los 100 caracteres" },
+              ]}
             >
               <Input
                 id="email"
@@ -695,6 +700,9 @@ export default function Home() {
                 Contraseña Actual
               </span>
             }
+            rules={[
+              { required: true, message: "Por favor ingresa tu contraseña actual" },
+            ]}
           >
             <Input.Password
               id="current-password"
@@ -709,6 +717,9 @@ export default function Home() {
                 Contraseña Nueva
               </span>
             }
+            rules={[
+              { required: true, message: "Por favor ingresa una nueva contraseña" },
+            ]}
           >
             <Input.Password
               id="new-password"
