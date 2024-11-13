@@ -24,13 +24,6 @@ body {
   @apply bg-gradient-to-b from-[#cebdf4] to-[#a5caf5];
 }
 
-.ant-card-actions > li > span:has(p) {
-  all: unset;
-  &:hover {
-    cursor: default;
-  }
-}
-
 @font-face {
   font-family: "Bebas";
   src: url("./assets/fonts/BebasNeue-Regular.ttf");
