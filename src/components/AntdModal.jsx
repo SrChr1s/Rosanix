@@ -8,6 +8,7 @@ export default function AntdModal({
   btnCancel,
   btnOk,
   children,
+  disabledOk = false,
 }) {
   return (
     <Modal
@@ -34,6 +35,7 @@ export default function AntdModal({
           <Button
             type="primary"
             onClick={onOk}
+            disabled={disabledOk}
             className="rounded-full text-white bg-[#bbacdf] font-semibold border-2 border-[#bbacdf]/60"
           >
             {btnOk}

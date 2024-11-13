@@ -42,8 +42,10 @@ export const TaskProvider = ({ children }) => {
   };
 
   const updateTask = async (task) => {
+    console.log(task);
     try {
       const res = await updateTaskRequest(task);
+      if (res.status === 200) setTasks(tasks.filter((t) => t !== task));
     } catch (err) {
       console.log(err);
     }
