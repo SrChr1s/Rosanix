@@ -1,12 +1,16 @@
 import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+
+const DashboardLazy = lazy(() => import("./pages/Dashboard"));
 
 function App() {
   return (
@@ -23,7 +27,30 @@ function App() {
       </Route>
 
       <Route element={<ProtectedRoute role="admin" fallback="/notfound" />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <Suspense
+              fallback={
+                <Spin
+                  spinning={true}
+                  fullscreen
+                  indicator={
+                    <LoadingOutlined
+                      spin
+                      style={{
+                        fontSize: 80,
+                        color: "#FFD6FF",
+                      }}
+                    />
+                  }
+                />
+              }
+            >
+              <DashboardLazy />
+            </Suspense>
+          }
+        />
       </Route>
 
       <Route path="*" element={<NotFound />} />
