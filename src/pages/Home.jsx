@@ -34,6 +34,7 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState(false);
   const [today, setToday] = useState("");
   const [expanded, setExpanded] = useState({});
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const { user, logout, updateInfo } = useAuth();
   const { tasks, getTasks, createTask, deleteTask } = useTasks();
@@ -144,10 +145,15 @@ export default function Home() {
     }, 1000);
   };
 
+  const handlePasswordChange = () => {
+    // manejar el cambio de contraseña
+    setShowPasswordModal(false);
+  };
+
   const toggleDescription = (taskId) => {
     setExpanded((prevState) => ({
       ...prevState,
-      [taskId]: !prevState[taskId], 
+      [taskId]: !prevState[taskId],
     }));
   };
 
@@ -187,6 +193,7 @@ export default function Home() {
             colorBorder: "white",
             activeBorderColor: "#947bcf",
             hoverBorderColor: "#947bcf",
+            borderRadius: 20,
           },
           Select: {
             activeBorderColor: "#947bcf",
@@ -340,7 +347,7 @@ export default function Home() {
               </Row>
             </div>
           </Content>
-          
+
           <Footer className="bg-[#bbacdf]"></Footer>
         </Layout>
       </Layout>
@@ -497,9 +504,72 @@ export default function Home() {
                 defaultValue={user.email}
               />
             </Form.Item>
+            <Button
+              className="mt-4 rounded-full bg-[#bbacdf] text-white font-semibold"
+              onClick={() => setShowPasswordModal(true)}
+            >
+              Cambiar contraseña
+            </Button>
           </Form>
         }
       />
+
+      <AntdModal
+        title="Cambiar Contraseña"
+        open={showPasswordModal}
+        onCancel={() => setShowPasswordModal(false)}
+        onOk={handlePasswordChange}
+        btnCancel="Cancelar"
+        btnOk="Guardar"
+      >
+        <Form
+          layout="vertical"
+          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
+          autoComplete="off"
+        >
+          <Form.Item
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Contraseña Actual
+              </span>
+            }
+          >
+            <Input.Password
+              id="current-password"
+              placeholder="Introduce tu contraseña actual"
+              className="text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Contraseña Nueva
+              </span>
+            }
+          >
+            <Input.Password
+              id="new-password"
+              placeholder="Introduce una nueva contraseña"
+              className="text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Confirmar Contraseña
+              </span>
+            }
+          >
+            <Input.Password
+              id="confirm-password"
+              placeholder="Confirma tu nueva contraseña"
+              className="text-gray-500 p-1.5 pl-4"
+            />
+          </Form.Item>
+        </Form>
+      </AntdModal>
 
       <AntdModal
         title="Cerrar sesión"
