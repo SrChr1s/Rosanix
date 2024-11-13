@@ -10,8 +10,8 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Card,
+  Button,
   Row,
   Col,
   Statistic,
@@ -30,27 +30,27 @@ import {
   FaUserPlus,
   FaUserGroup,
 } from "react-icons/fa6";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import AntdModal from "../components/AntdModal";
-import { getUsersCountsRequest, getTasksCountsRequest } from "../api/admin";
+import { getUsersRequest, getTasksCountsRequest } from "../api/admin";
+import { useAdmin } from "../context/Admin";
 const { Header, Content, Footer, Sider } = Layout;
-const { TextArea } = Input;
+
+const usersCount = await getUsersRequest().then((res) => res.data);
 
 const statsData = [
   {
     title: "Usuarios Activos",
     icon: "UserOutlined",
     color: "#1890ff",
-    value: await getUsersCountsRequest().then(
-      (res) => res.data.filter((u) => u.active).length
-    ),
+    value: usersCount.filter((u) => u.active).length,
   },
   {
     title: "Usuarios Inactivos",
     icon: "UserOutlined",
     color: "red",
-    value: await getUsersCountsRequest().then(
-      (res) => res.data.filter((u) => !u.active).length
-    ),
+    value: usersCount.filter((u) => !u.active).length,
   },
   {
     title: "Tareas Almacenadas",
@@ -62,14 +62,10 @@ const statsData = [
     title: "Nuevos Usuarios Hoy",
     icon: "UserAddOutlined",
     color: "#eb2f96",
-    value: await getUsersCountsRequest().then(
-      (res) =>
-        res.data.filter(
-          (u) =>
-            dayjs(u.createdAt).format("DD/MM/YYYY") ===
-            dayjs().format("DD/MM/YYYY")
-        ).length
-    ),
+    value: usersCount.filter(
+      (u) =>
+        dayjs(u.createdAt).format("DD/MM/YYYY") === dayjs().format("DD/MM/YYYY")
+    ).length,
   },
 ];
 
@@ -80,18 +76,21 @@ const iconMap = {
   UserAddOutlined: <UserAddOutlined />,
 };
 
-export default function Home() {
+export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [home, setHome] = useState(false);
+  const [home, setHome] = useState(true);
+  const [seeUsers, setSeeUsers] = useState(false);
   const [newUser, setNewUser] = useState(false);
-  const [users, setUsers] = useState(false);
   const [myData, setMyData] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [today, setToday] = useState("");
 
   const { user, logout } = useAuth();
+  const { users, getAllUsers, createOneUser } = useAdmin();
+
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
 
@@ -100,6 +99,7 @@ export default function Home() {
 
     if (e.key == 1) {
       setHome(true);
+      setSeeUsers(false);
       setLoading(false);
     }
 
@@ -109,7 +109,8 @@ export default function Home() {
     }
 
     if (e.key == 3) {
-      setUsers(true);
+      setSeeUsers(true);
+      setHome(false);
       setLoading(false);
     }
 
@@ -134,23 +135,89 @@ export default function Home() {
     setIsEditing(!isEditing);
   };
 
+  const handleSaveProfile = (values) => {
+    handleEditToggle();
+    closeModal();
+    if (user.email !== values.email) {
+      return MySwal.fire({
+        icon: "info",
+        title: "Espera!",
+        text: "Revisa la bandeja de entrada del nuevo correo para validarlo y poder realizar el cambio",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then((res) => navigate(0));
+    }
+    updateInfo({
+      name: values.name,
+      email: values.email,
+    });
+    navigate(0);
+  };
+
+  const handlePasswordChange = async (values) => {
+    setLoading(true);
+    const res = await changePassw(values);
+    if (res.status == 200) {
+      setLoading(false);
+      return MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Has cambiado tu contraseña con éxito!",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => closeModal());
+    }
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    }).then(() => closeModal());
+  };
+
+  const handleNewUser = async (user) => {
+    closeModal();
+    setLoading(true);
+    const res = await createOneUser(user);
+    if (res.status == 200) {
+      setLoading(false);
+      return MySwal.fire({
+        icon: "success",
+        title: "Éxito!",
+        text: "Has creado un usuario con éxito!",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#e299b6",
+      }).then(() => navigate(0));
+    }
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    });
+  };
+
   const closeModal = () => {
     setNewUser(false);
     setMyData(false);
     setLogoutSure(false);
+    setShowPasswordModal(false);
   };
 
   useEffect(() => {
-    setToday(
-      `${dayjs().year()}-${(dayjs().month() + 1)
-        .toString()
-        .padStart(2, "0")}-${dayjs().date().toString().padStart(2, "0")}`
-    );
+    getAllUsers();
   }, []);
 
   return (
     <ConfigProvider
       theme={{
+        token: {
+          colorPrimary: "#d47da0",
+        },
         components: {
           Modal: {
             headerBg: "transparent",
@@ -174,6 +241,10 @@ export default function Home() {
           DatePicker: {
             activeBorderColor: "#947bcf",
             hoverBorderColor: "#947bcf",
+          },
+          Card: {
+            colorTextHeading: "#ffffff",
+            headerBg: "#e299b6",
           },
         },
       }}
@@ -275,28 +346,56 @@ export default function Home() {
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
             <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0 py-4">
               <Row gutter={[16, 16]} justify="start">
-                {statsData.map((stat, index) => (
-                  <Col xs={24} sm={12} md={8} lg={6} key={index}>
-                    <Card
-                      className="duration-150 hover:scale-105 hover:cursor-pointer"
-                      bordered={false}
-                      style={{ minHeight: "150px" }}
-                    >
-                      <div className="flex flex-col items-center justify-center text-center h-full">
-                        <div
-                          style={{
-                            fontSize: "36px",
-                            color: stat.color,
-                            marginBottom: "10px",
-                          }}
-                        >
-                          {iconMap[stat.icon]}
+                {home &&
+                  statsData.map((stat, index) => (
+                    <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                      <Card
+                        className="duration-150 hover:scale-105"
+                        bordered={false}
+                        style={{ minHeight: "150px" }}
+                      >
+                        <div className="flex flex-col items-center justify-center text-center h-full">
+                          <div
+                            style={{
+                              fontSize: "36px",
+                              color: stat.color,
+                              marginBottom: "10px",
+                            }}
+                          >
+                            {iconMap[stat.icon]}
+                          </div>
+                          <Statistic title={stat.title} value={stat.value} />
                         </div>
-                        <Statistic title={stat.title} value={stat.value} />
-                      </div>
-                    </Card>
-                  </Col>
-                ))}
+                      </Card>
+                    </Col>
+                  ))}
+                {seeUsers &&
+                  users.map((user) => (
+                    <Col xs={24} sm={12} md={8} lg={6} key={user.id}>
+                      <Card
+                        title={
+                          <h2 className="text-lg font-semibold text-white">
+                            {user.name}
+                          </h2>
+                        }
+                        extra={
+                          <span className="text-xs text-[#a35776] pl-5">
+                            {dayjs(user.createdAt).format("DD/MM/YYYY")}
+                          </span>
+                        }
+                        bordered={false}
+                        className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
+                      >
+                        <div className="px-4 text-gray-700 mb-5">
+                          <div className="relative">
+                            <p>{user.email}</p>
+                            <p>{user.role}</p>
+                            <p>{user.active ? "Activo" : "Inactivo"}</p>
+                          </div>
+                        </div>
+                      </Card>
+                    </Col>
+                  ))}
               </Row>
             </div>
           </Content>
@@ -321,19 +420,16 @@ export default function Home() {
         title="Nuevo usuario"
         open={newUser}
         onCancel={closeModal}
+        onOk={() => document.getElementById("btn-new-user").click()}
         btnCancel={"Cancelar"}
         btnOk={"Crear"}
         children={
           <Form
-            name="newTask"
+            name="newUser"
             className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             layout="vertical"
             autoComplete="off"
-            onFinish={
-              {
-                /* funcion */
-              }
-            }
+            onFinish={handleNewUser}
           >
             <Form.Item
               name="name"
@@ -349,8 +445,8 @@ export default function Home() {
               ]}
             >
               <Input
-                placeholder="Nombre del usuario"
                 id="name"
+                placeholder="Nombre del usuario"
                 className="text-gray-500 p-1.5 pl-4"
               />
             </Form.Item>
@@ -369,8 +465,8 @@ export default function Home() {
               ]}
             >
               <Input
-                placeholder="correo@email.com"
                 id="email"
+                placeholder="correo@email.com"
                 className="text-gray-500 p-1.5 pl-4"
               />
             </Form.Item>
@@ -388,8 +484,8 @@ export default function Home() {
               ]}
             >
               <Input.Password
-                placeholder="thebestpassword123"
                 id="passw"
+                placeholder="thebestpassword123"
                 className="text-gray-500 p-1.5 pl-4 pr-2"
               />
             </Form.Item>
@@ -409,6 +505,7 @@ export default function Home() {
               ]}
             >
               <Select
+                id="role"
                 placeholder="Selecciona el rol"
                 className="text-gray-500"
                 options={[
@@ -417,31 +514,7 @@ export default function Home() {
                 ]}
               />
             </Form.Item>
-
-            <Form.Item
-              name="active"
-              label={
-                <span className="text-white font-[Nunito] font-semibold select-none">
-                  Activo
-                </span>
-              }
-              rules={[
-                {
-                  required: true,
-                  message:
-                    "Por favor selecciona si la cuenta está activa o no.",
-                },
-              ]}
-            >
-              <Select
-                placeholder="Activo"
-                className="text-gray-500"
-                options={[
-                  { value: "1", label: <span>Sí</span> },
-                  { value: "0", label: <span>No</span> },
-                ]}
-              />
-            </Form.Item>
+            <Button id="btn-new-user" htmlType="submit" hidden />
           </Form>
         }
       />
@@ -450,7 +523,11 @@ export default function Home() {
         title="Mis Datos"
         open={myData}
         onCancel={isEditing ? handleEditToggle : closeModal}
-        onOk={isEditing ? null : handleEditToggle} // AGREGAR FUNCION GUARDAR DATOS
+        onOk={() =>
+          isEditing
+            ? document.getElementById("btn-change-info").click()
+            : handleEditToggle()
+        }
         btnCancel={isEditing ? "Cancelar" : "Cerrar"}
         btnOk={isEditing ? "Guardar" : "Editar"}
         children={
@@ -458,8 +535,11 @@ export default function Home() {
             layout="vertical"
             className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
             autoComplete="off"
+            initialValues={user}
+            onFinish={handleSaveProfile}
           >
             <Form.Item
+              name="name"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Nombre
@@ -467,30 +547,131 @@ export default function Home() {
               }
             >
               <Input
+                id="name"
                 placeholder="Nombre de usuario"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
-                value={user.name}
               />
             </Form.Item>
 
             <Form.Item
+              name="email"
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Email
                 </span>
               }
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                { type: "email", message: "No es un email válido" },
+                { max: 100, message: "No puede sobrepasar los 100 caracteres" },
+              ]}
             >
               <Input
+                id="email"
                 placeholder="Correo electrónico"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
-                value={user.email}
               />
             </Form.Item>
+            <Button
+              className="mt-4 rounded-full bg-[#bbacdf] text-white font-semibold"
+              onClick={() => {
+                closeModal();
+                setShowPasswordModal(true);
+              }}
+              hidden={isEditing}
+            >
+              Cambiar contraseña
+            </Button>
+            <Button id="btn-change-info" htmlType="submit" hidden />
           </Form>
         }
       />
+
+      <AntdModal
+        title="Cambiar Contraseña"
+        open={showPasswordModal}
+        onCancel={closeModal}
+        onOk={() => document.getElementById("btn-change-pass").click()}
+        btnCancel="Cancelar"
+        btnOk="Guardar"
+      >
+        <Form
+          layout="vertical"
+          className="flex flex-col px-4 sm:px-16 pt-6 pb-6 rounded-xl bg-transparent"
+          autoComplete="off"
+          onFinish={handlePasswordChange}
+        >
+          <Form.Item
+            name="currentPassw"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Contraseña Actual
+              </span>
+            }
+            rules={[
+              { required: true, message: "Este campo es requerido" },
+              { min: 8, message: "Debe tener al menos 8 caracteres" },
+            ]}
+          >
+            <Input.Password
+              id="currentPassw"
+              placeholder="Introduce tu contraseña actual"
+              className="text-gray-500 p-1.5 pl-4 pr-5"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="newPassw"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Nueva contraseña
+              </span>
+            }
+            rules={[
+              { required: true, message: "Este campo es requerido" },
+              { min: 8, message: "Debe tener al menos 8 caracteres" },
+            ]}
+          >
+            <Input.Password
+              id="newPassw"
+              placeholder="Introduce una nueva contraseña"
+              className="text-gray-500 p-1.5 pl-4 pr-5"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="cNewPassw"
+            label={
+              <span className="text-white font-[Nunito] font-semibold select-none">
+                Confirmar nueva contraseña
+              </span>
+            }
+            validateFirst
+            dependencies={["newPassw"]}
+            rules={[
+              { required: true, message: "Este campo es requerido" },
+              { min: 8, message: "Debe tener al menos 8 caracteres" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("newPassw") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Su contraseña no coincide"));
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              id="cNewPassw"
+              placeholder="Confirma tu nueva contraseña"
+              className="text-gray-500 p-1.5 pl-4 pr-5"
+            />
+          </Form.Item>
+          <Button id="btn-change-pass" htmlType="submit" hidden />
+        </Form>
+      </AntdModal>
 
       <AntdModal
         title="Cerrar sesión"
