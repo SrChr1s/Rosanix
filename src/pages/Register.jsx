@@ -38,27 +38,9 @@ export default function Register() {
     setLoading(true);
     const res = await signup(values);
 
-    if (res) {
+    if (res.status == 200) {
       setLoading(false);
-      if (res.code === "ERR_NETWORK") {
-        return MySwal.fire({
-          icon: "error",
-          title: "Ups!",
-          text: "Error en el servidor, intenta más tarde.",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        });
-      }
-      MySwal.fire({
-        icon: "error",
-        title: "Ups!",
-        text: res.response.data,
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      });
-    } else {
-      setLoading(false);
-      MySwal.fire({
+      return MySwal.fire({
         icon: "success",
         title: "Éxito!",
         text: "Su cuenta ha sido registrada con éxito",
@@ -78,6 +60,15 @@ export default function Register() {
           navigate("/login");
         });
     }
+
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.response.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    });
   };
 
   return (
@@ -101,10 +92,15 @@ export default function Register() {
           name="name"
           label="Nombre"
           hidden={steps !== 0}
+          validateFirst
           rules={[
             { required: true, message: "Este campo es requerido" },
+            {
+              pattern: new RegExp(/^[A-Za-z]+$/i),
+              message: "Solo puede debe contener letras",
+            },
             { min: 3, message: "Debe tener al menos 3 caracteres" },
-            { max: 25, message: "No puede sobrepasar los 25 caracteres" },
+            { max: 30, message: "No puede sobrepasar los 30 caracteres" },
           ]}
         >
           <Input
@@ -119,6 +115,7 @@ export default function Register() {
           name="email"
           label="Email"
           hidden={steps !== 0}
+          validateFirst
           rules={[
             { required: true, message: "Este campo es requerido" },
             { type: "email", message: "No es un email válido" },
@@ -141,6 +138,7 @@ export default function Register() {
         <Form.Item
           name="passw"
           label="Contraseña"
+          validateFirst
           hidden={steps !== 1}
           rules={[
             { required: true, message: "Este campo es requerido" },

@@ -377,9 +377,11 @@ export default function Home() {
           </Header>
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
             <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0">
-              <h2 className="text-3xl text-white w-full text-center pb-5">
-                Tareas Pendientes
-              </h2>
+              {tasks.length != 0 && (
+                <h2 className="text-2xl text-white w-full pb-5">
+                  Tareas Pendientes
+                </h2>
+              )}
               <Row gutter={[16, 16]} justify="start">
                 {tasks
                   .sort(
@@ -397,7 +399,9 @@ export default function Home() {
                         }
                         extra={
                           <span className="text-xs text-[#a35776] pl-5">
-                            {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                            {task.createdAt != "CURRENT_TIMESTAMP"
+                              ? dayjs(task.createdAt).format("DD/MM/YYYY")
+                              : dayjs().format("DD/MM/YYYY")}
                           </span>
                         }
                         bordered={false}
@@ -453,7 +457,7 @@ export default function Home() {
                 {tasks.find((task) => task.state === "completada") && (
                   <>
                     <Divider />
-                    <h2 className="text-3xl text-white w-full text-center pb-5">
+                    <h2 className="text-2xl text-white w-full pb-5">
                       Tareas Completadas
                     </h2>
                   </>
@@ -767,11 +771,21 @@ export default function Home() {
           >
             <Form.Item
               name="name"
+              validateFirst
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Nombre
                 </span>
               }
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                {
+                  pattern: new RegExp(/^[A-Za-z]+$/i),
+                  message: "Solo puede debe contener letras",
+                },
+                { min: 3, message: "Debe contener al menos 3 caracteres" },
+                { max: 30, message: "No puede sobrepasar los 30 caracteres" },
+              ]}
             >
               <Input
                 id="name"
@@ -783,6 +797,7 @@ export default function Home() {
 
             <Form.Item
               name="email"
+              validateFirst
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Email

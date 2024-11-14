@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 export default function Login() {
-  const { signin, user } = useAuth();
+  const { signin } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -19,41 +19,11 @@ export default function Login() {
   const handleSend = async (values) => {
     setLoading(true);
 
-    if (user) {
-      setLoading(false);
-      return MySwal.fire({
-        icon: "info",
-        title: "Ups!",
-        text: "Necesitas confirmar tu correo antes de poder entrar",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      });
-    }
-
     const res = await signin(values);
 
-    if (res) {
-      if (res.code == "ERR_NETWORK") {
-        setLoading(false);
-        return MySwal.fire({
-          icon: "error",
-          title: "Ups!",
-          text: "Error en el servidor, intenta más tarde.",
-          confirmButtonText: "Aceptar",
-          confirmButtonColor: "#e299b6",
-        });
-      }
+    if (res.status == 200) {
       setLoading(false);
-      MySwal.fire({
-        icon: "error",
-        title: "Ups!",
-        text: res.response.data,
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#e299b6",
-      });
-    } else {
-      setLoading(false);
-      await MySwal.fire({
+      return MySwal.fire({
         icon: "success",
         title: "Éxito!",
         text: "Has iniciado sesión correctamente",
@@ -63,6 +33,14 @@ export default function Login() {
         navigate("/home");
       });
     }
+    setLoading(false);
+    MySwal.fire({
+      icon: "error",
+      title: "Ups!",
+      text: res.response.data,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#e299b6",
+    });
   };
 
   return (
