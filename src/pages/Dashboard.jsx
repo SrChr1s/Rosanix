@@ -29,6 +29,8 @@ import {
   FaHouse,
   FaUserPlus,
   FaUserGroup,
+  FaEnvelope,
+  FaUserShield,
 } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -374,23 +376,46 @@ export default function Dashboard() {
                     <Col xs={24} sm={12} md={8} lg={6} key={user.id}>
                       <Card
                         title={
-                          <h2 className="text-lg font-semibold text-white">
-                            {user.name}
-                          </h2>
+                          <div className="flex items-center space-x-2">
+                            <h2 className="text-lg font-semibold text-white">
+                              {user.name}
+                            </h2>
+                          </div>
                         }
                         extra={
-                          <span className="text-xs text-[#a35776] pl-5">
-                            {dayjs(user.createdAt).format("DD/MM/YYYY")}
+                          <span
+                            className={`text-xs font-semibold rounded-full px-2 py-1 ${
+                              user.active
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {user.active ? "Activo" : "Inactivo"}
                           </span>
                         }
                         bordered={false}
-                        className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
+                        className="w-full flex flex-col justify-between shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
                       >
-                        <div className="px-4 text-gray-700 mb-5">
-                          <div className="relative">
-                            <p>{user.email}</p>
-                            <p>{user.role}</p>
-                            <p>{user.active ? "Activo" : "Inactivo"}</p>
+                        <div className="px-4 py-3 text-gray-700">
+                          <div className="mb-2 flex items-center">
+                            <span className="text-purple-500 mr-2">
+                              <FaEnvelope />
+                            </span>
+                            <p className="text-sm sm:break-all">{user.email}</p>
+                          </div>
+                          <div className="mb-2 flex items-center">
+                            <span className="text-pink-500 mr-2">
+                              <FaUserShield />
+                            </span>
+                            <p className="text-sm">
+                              {user.role === "admin"
+                                ? "Administrador"
+                                : "Usuario"}
+                            </p>
+                          </div>
+                          <div className="text-xs text-gray-400 mt-2">
+                            Registrado el{" "}
+                            {dayjs(user.createdAt).format("DD/MM/YYYY")}
                           </div>
                         </div>
                       </Card>
