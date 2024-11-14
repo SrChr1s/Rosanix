@@ -24,6 +24,15 @@ body {
   @apply bg-gradient-to-b from-[#cebdf4] to-[#a5caf5];
 }
 
+.custom-task-modal .ant-modal-content {
+  background: transparent;
+  box-shadow: none; 
+}
+
+.custom-task-modal .ant-modal-mask {
+  background: transparent; 
+}
+
 @font-face {
   font-family: "Bebas";
   src: url("./assets/fonts/BebasNeue-Regular.ttf");

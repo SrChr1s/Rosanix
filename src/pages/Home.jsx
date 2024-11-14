@@ -17,6 +17,7 @@ import {
   Row,
   Col,
   Divider,
+  Modal,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import {
@@ -46,6 +47,7 @@ export default function Home() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [taskValues, setTaskValues] = useState({});
   const [isTaskMod, setIsTaskMod] = useState(false);
+  const [cardExpanded, setCardExpanded] = useState(null);
 
   const { user, logout, updateInfo, changePassw } = useAuth();
   const { tasks, getTasks, createTask, deleteTask, updateTask, completeTask } =
@@ -61,6 +63,12 @@ export default function Home() {
     media: 2,
     alta: 1,
   };
+
+  const openCardModal = (taskId) => {
+    setCardExpanded(taskId);
+  };
+
+  const closeCardModal = () => setCardExpanded(null);
 
   const handleMenuClick = async (e) => {
     setLoading(true);
@@ -433,9 +441,9 @@ export default function Home() {
                               {task.descr.length > 100 && (
                                 <button
                                   className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
-                                  onClick={() => toggleDescription(task.id)}
+                                  onClick={() => openCardModal(task.id)}
                                 >
-                                  {expanded[task.id] ? "Ver menos" : "Ver más"}
+                                  Ver más
                                 </button>
                               )}
                             </div>
@@ -448,6 +456,42 @@ export default function Home() {
                           </div>
                         )}
                       </Card>
+                      {cardExpanded === task.id && (
+                        <Modal
+                          open={true}
+                          onCancel={closeCardModal}
+                          footer={null}
+                          closable={false}
+                          className="custom-task-modal"
+                        >
+                          <Card
+                            title={
+                              <h2 className="text-lg font-semibold text-white">
+                                {task.title}
+                              </h2>
+                            }
+                            extra={
+                              <span className="text-xs text-[#a35776] pl-5">
+                                {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                              </span>
+                            }
+                            bordered={false}
+                            className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden"
+                            actions={[
+                              <button
+                                className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
+                                onClick={closeCardModal}
+                              >
+                                Cerrar
+                              </button>,
+                            ]}
+                          >
+                            <div className="px-4 text-gray-700 mb-5">
+                              <p className="break-words">{task.descr}</p>
+                            </div>
+                          </Card>
+                        </Modal>
+                      )}
                     </Col>
                   ))}
                 {tasks.find((task) => task.state === "completada") && (
