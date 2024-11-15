@@ -69,6 +69,10 @@ export default function Home() {
     setCardExpanded(taskId);
   };
 
+  const closeCardModal = () => {
+    setCardExpanded(null); 
+  };
+
   const handleMenuClick = async (e) => {
     setLoading(true);
 
@@ -231,20 +235,12 @@ export default function Home() {
     }).then(() => closeModal());
   };
 
-  const toggleDescription = (taskId) => {
-    setExpanded((prevState) => ({
-      ...prevState,
-      [taskId]: !prevState[taskId],
-    }));
-  };
-
   const closeModal = () => {
     setNewTask(false);
     setMyData(false);
     setLogoutSure(false);
     setShowEditModal(false);
     setShowPasswordModal(false);
-    setCardExpanded(false);
   };
 
   const handleEditModal = (task) => {
@@ -438,7 +434,7 @@ export default function Home() {
                         {task.descr ? (
                           <div className="px-4 text-gray-700 mb-5">
                             <div className="relative">
-                              <p
+                            <p
                                 className={`${
                                   expanded[task.id] ? "" : "line-clamp-1"
                                 } break-words`}
@@ -466,7 +462,7 @@ export default function Home() {
                       {cardExpanded === task.id && (
                         <Modal
                           open={true}
-                          onCancel={closeModal}
+                          onCancel={closeCardModal}
                           footer={null}
                           closable={false}
                           className="custom-task-modal"
@@ -487,7 +483,7 @@ export default function Home() {
                             actions={[
                               <button
                                 className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
-                                onClick={closeModal}
+                                onClick={closeCardModal}
                               >
                                 Cerrar
                               </button>,
@@ -581,7 +577,7 @@ export default function Home() {
                       {cardExpanded === task.id && (
                         <Modal
                           open={true}
-                          onCancel={closeModal}
+                          onCancel={closeCardModal}
                           footer={null}
                           closable={false}
                           className="custom-task-modal"
@@ -602,7 +598,7 @@ export default function Home() {
                             actions={[
                               <button
                                 className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
-                                onClick={closeModal}
+                                onClick={closeCardModal}
                               >
                                 Cerrar
                               </button>,
