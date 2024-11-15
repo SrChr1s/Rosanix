@@ -12,23 +12,12 @@ import {
   Input,
   Select,
   DatePicker,
-  Card,
   Button,
-  Row,
-  Col,
   Divider,
-  Modal,
   Collapse,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import {
-  FaIdCard,
-  FaKey,
-  FaPlus,
-  FaPencil,
-  FaTrash,
-  FaCircleCheck,
-} from "react-icons/fa6";
+import { FaIdCard, FaKey, FaPlus } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import AntdModal from "../components/AntdModal";
@@ -631,6 +620,7 @@ export default function Home() {
               ]}
             >
               <Select
+                onChange={() => setIsTaskMod(true)}
                 placeholder="Selecciona la prioridad"
                 className="text-gray-500"
                 options={[
