@@ -59,40 +59,10 @@ export default function Dashboard() {
   const [updateUsers, setUpdateUsers] = useState(true);
   const [usersCount, setUsersCount] = useState(null);
   const [tasksCount, setTasksCount] = useState(null);
+  const [statsData, setStatsData] = useState([]);
 
   const { user, logout } = useAuth();
   const { users, getAllUsers, getAllTasks, createOneUser } = useAdmin();
-
-  const statsData = [
-    {
-      title: "Usuarios Activos",
-      icon: "UserOutlined",
-      color: "#1890ff",
-      value: usersCount.filter((u) => u.active).length,
-    },
-    {
-      title: "Usuarios Inactivos",
-      icon: "UserOutlined",
-      color: "red",
-      value: usersCount.filter((u) => !u.active).length,
-    },
-    {
-      title: "Tareas Almacenadas",
-      icon: "FileDoneOutlined",
-      color: "#52c41a",
-      value: tasksCount.length,
-    },
-    {
-      title: "Nuevos Usuarios Hoy",
-      icon: "UserAddOutlined",
-      color: "#eb2f96",
-      value: usersCount.filter(
-        (u) =>
-          dayjs(u.createdAt).format("DD/MM/YYYY") ===
-          dayjs().format("DD/MM/YYYY")
-      ).length,
-    },
-  ];
 
   const MySwal = withReactContent(Swal);
 
@@ -220,8 +190,42 @@ export default function Dashboard() {
   }, [updateUsers]);
 
   useEffect(() => {
-    setUsersCount(getAllUsers());
-    setTasksCount(getAllTasks());
+    async function test() {
+      setUsersCount(getAllUsers());
+      setTasksCount(getAllTasks());
+
+      setStatsData([
+        {
+          title: "Usuarios Activos",
+          icon: "UserOutlined",
+          color: "#1890ff",
+          value: usersCount.filter((u) => u.active).length,
+        },
+        {
+          title: "Usuarios Inactivos",
+          icon: "UserOutlined",
+          color: "red",
+          value: usersCount.filter((u) => !u.active).length,
+        },
+        {
+          title: "Tareas Almacenadas",
+          icon: "FileDoneOutlined",
+          color: "#52c41a",
+          value: tasksCount.length,
+        },
+        {
+          title: "Nuevos Usuarios Hoy",
+          icon: "UserAddOutlined",
+          color: "#eb2f96",
+          value: usersCount.filter(
+            (u) =>
+              dayjs(u.createdAt).format("DD/MM/YYYY") ===
+              dayjs().format("DD/MM/YYYY")
+          ).length,
+        },
+      ]);
+    }
+    test();
   }, []);
 
   return (
