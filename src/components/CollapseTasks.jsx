@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Row, Col, Card, Modal } from "antd";
+import { Row, Col, Card, Modal, Tooltip } from "antd";
 import { FaCircleCheck, FaPencil, FaTrash } from "react-icons/fa6";
 
 export default function CollapseTasks({
@@ -36,21 +36,24 @@ export default function CollapseTasks({
               bordered={false}
               className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
               actions={[
-                <FaCircleCheck
-                  className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                  key="complete"
-                  onClick={() => complete(task)}
-                />,
-                <FaPencil
-                  className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                  key="edit"
-                  onClick={() => edit(task)}
-                />,
-                <FaTrash
-                  className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                  key="delete"
-                  onClick={() => del(task.id)}
-                />,
+                <Tooltip title="Marcar como completado" key="complete">
+                  <FaCircleCheck
+                    className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                    onClick={() => complete(task)}
+                  />
+                </Tooltip>,
+                <Tooltip title="Editar tarea" key="edit">
+                  <FaPencil
+                    className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                    onClick={() => edit(task)}
+                  />
+                </Tooltip>,
+                <Tooltip title="Eliminar tarea" key="delete">
+                  <FaTrash
+                    className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                    onClick={() => del(task.id)}
+                  />
+                </Tooltip>,
               ]}
             >
               {task.descr ? (
