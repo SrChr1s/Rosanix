@@ -60,7 +60,7 @@ export default function Dashboard() {
   const [statsData, setStatsData] = useState([]);
 
   const { user, logout } = useAuth();
-  const { users, getAllUsers, getAllTasks, createOneUser } = useAdmin();
+  const { users, tasks, getAllUsers, getAllTasks, createOneUser } = useAdmin();
 
   const MySwal = withReactContent(Swal);
 
@@ -183,7 +183,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (updateUsers) {
       getAllUsers();
-      setUpdateUsers(false);
+      getAllTasks();
 
       setStatsData([
         {
@@ -203,7 +203,7 @@ export default function Dashboard() {
           icon: "FileDoneOutlined",
           color: "#52c41a",
           value: 1,
-          // value: await getTasksCountsRequest().then((res) => res.data.length),
+          value: tasks.length,
         },
         {
           title: "Nuevos Usuarios Hoy",
@@ -217,6 +217,7 @@ export default function Dashboard() {
         },
       ]);
     }
+    setUpdateUsers(false);
   }, [updateUsers]);
 
   return (

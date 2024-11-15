@@ -1,6 +1,9 @@
 import { createContext, useContext, useState } from "react";
-import { createOneUserRequest, getUsersRequest } from "../api/admin";
-import { getTasksRequest } from "../api/tasks";
+import {
+  createOneUserRequest,
+  getUsersRequest,
+  getTasksRequest,
+} from "../api/admin";
 
 export const AdminContext = createContext();
 
@@ -13,6 +16,7 @@ export const useAdmin = () => {
 
 export const AdminProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   const getAllUsers = async () => {
     const res = await getUsersRequest();
@@ -22,6 +26,7 @@ export const AdminProvider = ({ children }) => {
 
   const getAllTasks = async () => {
     const res = await getTasksRequest();
+    setTasks(res.data);
     return res.data;
   };
 
@@ -42,6 +47,7 @@ export const AdminProvider = ({ children }) => {
         users,
         createOneUser,
         getAllTasks,
+        tasks,
       }}
     >
       {children}
