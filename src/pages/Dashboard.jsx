@@ -189,32 +189,30 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function test() {
-      const usersCount = await getUsersRequest().then((res) => res.data);
-
       setStatsData([
         {
           title: "Usuarios Activos",
           icon: "UserOutlined",
           color: "#1890ff",
-          value: usersCount.filter((u) => u.active).length,
+          value: users.filter((u) => u.active).length,
         },
         {
           title: "Usuarios Inactivos",
           icon: "UserOutlined",
           color: "red",
-          value: usersCount.filter((u) => !u.active).length,
+          value: users.filter((u) => !u.active).length,
         },
         {
           title: "Tareas Almacenadas",
           icon: "FileDoneOutlined",
           color: "#52c41a",
-          value: await getTasksCountsRequest().then((res) => res.data.length),
+          // value: await getTasksCountsRequest().then((res) => res.data.length),
         },
         {
           title: "Nuevos Usuarios Hoy",
           icon: "UserAddOutlined",
           color: "#eb2f96",
-          value: usersCount.filter(
+          value: users.filter(
             (u) =>
               dayjs(u.createdAt).format("DD/MM/YYYY") ===
               dayjs().format("DD/MM/YYYY")
