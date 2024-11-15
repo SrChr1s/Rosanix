@@ -22,6 +22,7 @@ export const AdminProvider = ({ children }) => {
   const createOneUser = async (user) => {
     try {
       const res = await createOneUserRequest(user);
+      setUsers((prevUsers) => [...prevUsers, res.data]);
       return res;
     } catch (err) {
       console.log(err);

@@ -48,6 +48,7 @@ export default function Home() {
   const [taskValues, setTaskValues] = useState({});
   const [isTaskMod, setIsTaskMod] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(null);
+  const [updateTasks, setUpdateTasks] = useState(true);
 
   const { user, logout, updateInfo, changePassw } = useAuth();
   const { tasks, getTasks, createTask, deleteTask, updateTask, completeTask } =
@@ -102,7 +103,7 @@ export default function Home() {
         text: "Has creado una tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then(() => navigate(0));
+      }).then(() => setUpdateTasks(true));
     }
     setLoading(false);
     MySwal.fire({
@@ -133,7 +134,7 @@ export default function Home() {
         text: "Has modificado esta tarea correctamente",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then(() => navigate(0));
+      }).then(() => setUpdateTasks(true));
     }
     setLoading(false);
     MySwal.fire({
@@ -177,7 +178,7 @@ export default function Home() {
       icon: "success",
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#e299b6",
-    });
+    }).then(() => setUpdateTasks(true));
   };
 
   const handleLogout = async () => {
@@ -200,7 +201,7 @@ export default function Home() {
         text: "Revisa la bandeja de entrada del nuevo correo para validarlo y poder realizar el cambio",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then((res) => navigate(0));
+      }).then(() => navigate(0));
     }
     updateInfo({
       name: values.name,
@@ -264,8 +265,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    getTasks();
-  }, []);
+    if (updateTasks) {
+      getTasks();
+      setUpdateTasks(false);
+    }
+  }, [updateTasks]);
 
   useEffect(() => {
     form.setFieldsValue(taskValues);

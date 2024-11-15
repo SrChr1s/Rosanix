@@ -30,6 +30,9 @@ export default function Login() {
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
       }).then(() => {
+        if (res.data.role === "admin") {
+          return navigate("/dashboard");
+        }
         navigate("/home");
       });
     }
