@@ -251,12 +251,32 @@ export default function Home() {
     );
   }, []);
 
+  const items = { pendientes: [], completadas: [] };
+
   useEffect(() => {
     if (updateTasks) {
       getTasks();
       setUpdateTasks(false);
     }
   }, [updateTasks]);
+
+  if (tasks.find((t) => t.priority == "alta" && t.state == "pendiente"))
+    items.pendientes.push("alta");
+
+  if (tasks.find((t) => t.priority == "alta" && t.state == "completada"))
+    items.completadas.push("alta");
+
+  if (tasks.find((t) => t.priority == "media" && t.state == "pendiente"))
+    items.pendientes.push("media");
+
+  if (tasks.find((t) => t.priority == "media" && t.state == "completada"))
+    items.completadas.push("media");
+
+  if (tasks.find((t) => t.priority == "baja" && t.state == "pendiente"))
+    items.pendientes.push("baja");
+
+  if (tasks.find((t) => t.priority == "baja" && t.state == "completada"))
+    items.completadas.push("baja");
 
   useEffect(() => {
     form.setFieldsValue(taskValues);
@@ -388,7 +408,7 @@ export default function Home() {
               {tasks.find((task) => task.state === "pendiente") && (
                 <Collapse
                   className="w-full"
-                  items={["alta", "media", "baja"].map((t, i) => ({
+                  items={items.pendientes.map((t, i) => ({
                     key: i,
                     label: `${
                       t.charAt(0).toUpperCase() + t.slice(1)
@@ -423,7 +443,7 @@ export default function Home() {
               {tasks.find((task) => task.state === "completada") && (
                 <Collapse
                   className="w-full mb-5"
-                  items={["alta", "media", "baja"].map((t, i) => ({
+                  items={items.completadas.map((t, i) => ({
                     key: i,
                     label: `${
                       t.charAt(0).toUpperCase() + t.slice(1)

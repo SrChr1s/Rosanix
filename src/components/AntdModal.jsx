@@ -12,6 +12,7 @@ export default function AntdModal({
 }) {
   return (
     <Modal
+      forceRender
       title={
         <div className="text-center font-[Nunito] text-white text-xl font-semibold mt-2">
           {title}

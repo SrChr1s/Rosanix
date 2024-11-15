@@ -3,9 +3,7 @@ import dayjs from "dayjs";
 import { Row, Col, Card, Modal, Tooltip } from "antd";
 import { FaCircleCheck, FaPencil, FaTrash } from "react-icons/fa6";
 
-const CustomTrigger = forwardRef((props, ref) => (
-  <div {...props} ref={ref} />
-));
+const CustomTrigger = forwardRef((props, ref) => <div {...props} ref={ref} />);
 
 export default function CollapseTasks({
   tasks,
@@ -40,32 +38,45 @@ export default function CollapseTasks({
               }
               bordered={false}
               className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
-              actions={[
-                <Tooltip title="Marcar como completado" key="complete">
-                  <CustomTrigger>
-                    <FaCircleCheck
-                      className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                      onClick={() => complete(task)}
-                    />
-                  </CustomTrigger>
-                </Tooltip>,
-                <Tooltip title="Editar tarea" key="edit">
-                  <CustomTrigger>
-                    <FaPencil
-                      className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                      onClick={() => edit(task)}
-                    />
-                  </CustomTrigger>
-                </Tooltip>,
-                <Tooltip title="Eliminar tarea" key="delete">
-                  <CustomTrigger>
-                    <FaTrash
-                      className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                      onClick={() => del(task.id)}
-                    />
-                  </CustomTrigger>
-                </Tooltip>,
-              ]}
+              actions={
+                state == "pendiente"
+                  ? [
+                      <Tooltip title="Marcar como completado" key="complete">
+                        <CustomTrigger>
+                          <FaCircleCheck
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            onClick={() => complete(task)}
+                          />
+                        </CustomTrigger>
+                      </Tooltip>,
+                      <Tooltip title="Editar tarea" key="edit">
+                        <CustomTrigger>
+                          <FaPencil
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            onClick={() => edit(task)}
+                          />
+                        </CustomTrigger>
+                      </Tooltip>,
+                      <Tooltip title="Eliminar tarea" key="delete">
+                        <CustomTrigger>
+                          <FaTrash
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            onClick={() => del(task.id)}
+                          />
+                        </CustomTrigger>
+                      </Tooltip>,
+                    ]
+                  : [
+                      <Tooltip title="Eliminar tarea" key="delete">
+                        <CustomTrigger>
+                          <FaTrash
+                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
+                            onClick={() => del(task.id)}
+                          />
+                        </CustomTrigger>
+                      </Tooltip>,
+                    ]
+              }
             >
               {task.descr ? (
                 <div className="px-4 text-gray-700 mb-5">
