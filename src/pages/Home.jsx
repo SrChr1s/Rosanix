@@ -721,7 +721,6 @@ export default function Home() {
               ]}
             >
               <Input
-                id="name"
                 placeholder="Nombre de usuario"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
@@ -743,7 +742,6 @@ export default function Home() {
               ]}
             >
               <Input
-                id="email"
                 placeholder="Correo electrónico"
                 disabled={!isEditing}
                 className="text-gray-500 p-1.5 pl-4"
@@ -791,7 +789,6 @@ export default function Home() {
             ]}
           >
             <Input.Password
-              id="currentPassw"
               placeholder="Introduce tu contraseña actual"
               className="text-gray-500 p-1.5 pl-4 pr-5"
             />
@@ -810,7 +807,6 @@ export default function Home() {
             ]}
           >
             <Input.Password
-              id="newPassw"
               placeholder="Introduce una nueva contraseña"
               className="text-gray-500 p-1.5 pl-4 pr-5"
             />
@@ -839,7 +835,6 @@ export default function Home() {
             ]}
           >
             <Input.Password
-              id="cNewPassw"
               placeholder="Confirma tu nueva contraseña"
               className="text-gray-500 p-1.5 pl-4 pr-5"
             />
