@@ -477,7 +477,7 @@ export default function Dashboard() {
               rules={[
                 { required: true, message: "Este campo es requerido" },
                 {
-                  pattern: new RegExp(/^[A-Za-z]+$/i),
+                  pattern: new RegExp(/^[A-Za-z\s]+$/i),
                   message: "Solo puede debe contener letras",
                 },
                 { min: 3, message: "Debe tener al menos 3 caracteres" },
@@ -585,7 +585,7 @@ export default function Dashboard() {
               rules={[
                 { required: true, message: "Este campo es requerido" },
                 {
-                  pattern: new RegExp(/^[A-Za-z]+$/i),
+                  pattern: new RegExp(/^[A-Za-z\s]+$/i),
                   message: "Solo puede debe contener letras",
                 },
                 { min: 3, message: "Debe contener al menos 3 caracteres" },

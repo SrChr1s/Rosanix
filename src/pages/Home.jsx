@@ -714,7 +714,7 @@ export default function Home() {
               rules={[
                 { required: true, message: "Este campo es requerido" },
                 {
-                  pattern: new RegExp(/^[A-Za-z]+$/i),
+                  pattern: new RegExp(/^[A-Za-z\s]+$/i),
                   message: "Solo puede debe contener letras",
                 },
                 { min: 3, message: "Debe contener al menos 3 caracteres" },
