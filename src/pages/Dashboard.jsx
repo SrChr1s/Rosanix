@@ -57,8 +57,6 @@ export default function Dashboard() {
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [updateUsers, setUpdateUsers] = useState(true);
-  const [usersCount, setUsersCount] = useState(null);
-  const [tasksCount, setTasksCount] = useState(null);
   const [statsData, setStatsData] = useState([]);
 
   const { user, logout } = useAuth();
@@ -191,8 +189,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function test() {
-      setUsersCount(await getUsersRequest());
-      setTasksCount(await getTasksCountsRequest());
+      const usersCount = await getUsersRequest().then((res) => res.data);
 
       setStatsData([
         {
@@ -211,7 +208,7 @@ export default function Dashboard() {
           title: "Tareas Almacenadas",
           icon: "FileDoneOutlined",
           color: "#52c41a",
-          value: tasksCount.length,
+          value: await getTasksCountsRequest().then((res) => res.data.length),
         },
         {
           title: "Nuevos Usuarios Hoy",
