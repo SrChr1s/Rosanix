@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import { Layout } from "antd";
+import { useAuth } from "../context/Auth";
 const { Header, Content, Footer } = Layout;
 
 export default function Landing() {
+  const { user } = useAuth();
   return (
     <Layout
       className="relative min-h-screen bg-[url('/background.png')] bg-cover bg-center bg-fixed flex flex-col overflow-hidden"
@@ -39,9 +41,23 @@ export default function Landing() {
           </Link>
         </div>
         <div className="flex items-center space-x-4">
-          <Link to="/login">
+          <Link
+            to={
+              user
+                ? user.role == "usuario"
+                  ? "/home"
+                  : "/dashboard"
+                : "/login"
+            }
+          >
             <Button
-              text={"Iniciar sesión"}
+              text={
+                user
+                  ? user.role == "usuario"
+                    ? "Ir al Home"
+                    : "Ir al Dashboard"
+                  : "Iniciar sesión"
+              }
               className="font-semibold py-2 px-4 rounded-md"
             />
           </Link>
