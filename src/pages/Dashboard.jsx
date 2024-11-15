@@ -127,6 +127,7 @@ export default function Dashboard() {
   };
 
   const handlePasswordChange = async (values) => {
+    closeModal();
     setLoading(true);
     const res = await changePassw(values);
     if (res.status == 200) {
@@ -137,7 +138,7 @@ export default function Dashboard() {
         text: "Has cambiado tu contraseña con éxito!",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then(() => closeModal());
+      });
     }
     setLoading(false);
     MySwal.fire({
@@ -146,7 +147,7 @@ export default function Dashboard() {
       text: res.data,
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#e299b6",
-    }).then(() => closeModal());
+    });
   };
 
   const handleNewUser = async (user) => {
