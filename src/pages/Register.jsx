@@ -65,7 +65,7 @@ export default function Register() {
     MySwal.fire({
       icon: "error",
       title: "Ups!",
-      text: res.response.data,
+      text: res.data,
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#e299b6",
     });
