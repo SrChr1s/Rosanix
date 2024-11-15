@@ -60,6 +60,7 @@ export default function Register() {
           navigate("/login");
         });
     }
+    console.log(res);
 
     setLoading(false);
     MySwal.fire({
