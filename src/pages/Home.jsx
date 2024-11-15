@@ -69,8 +69,6 @@ export default function Home() {
     setCardExpanded(taskId);
   };
 
-  const closeCardModal = () => setCardExpanded(null);
-
   const handleMenuClick = async (e) => {
     setLoading(true);
 
@@ -246,6 +244,7 @@ export default function Home() {
     setLogoutSure(false);
     setShowEditModal(false);
     setShowPasswordModal(false);
+    setCardExpanded(false);
   };
 
   const handleEditModal = (task) => {
@@ -467,7 +466,7 @@ export default function Home() {
                       {cardExpanded === task.id && (
                         <Modal
                           open={true}
-                          onCancel={closeCardModal}
+                          onCancel={closeModal}
                           footer={null}
                           closable={false}
                           className="custom-task-modal"
@@ -488,7 +487,7 @@ export default function Home() {
                             actions={[
                               <button
                                 className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
-                                onClick={closeCardModal}
+                                onClick={closeModal}
                               >
                                 Cerrar
                               </button>,
@@ -564,9 +563,9 @@ export default function Home() {
                               {task.descr.length > 100 && (
                                 <button
                                   className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
-                                  onClick={() => toggleDescription(task.id)}
+                                  onClick={() => openCardModal(task.id)}
                                 >
-                                  {expanded[task.id] ? "Ver menos" : "Ver más"}
+                                  Ver más
                                 </button>
                               )}
                             </div>
@@ -579,6 +578,42 @@ export default function Home() {
                           </div>
                         )}
                       </Card>
+                      {cardExpanded === task.id && (
+                        <Modal
+                          open={true}
+                          onCancel={closeModal}
+                          footer={null}
+                          closable={false}
+                          className="custom-task-modal"
+                        >
+                          <Card
+                            title={
+                              <h2 className="text-lg font-semibold text-white">
+                                {task.title}
+                              </h2>
+                            }
+                            extra={
+                              <span className="text-xs text-[#a35776] pl-5">
+                                {dayjs(task.createdAt).format("DD/MM/YYYY")}
+                              </span>
+                            }
+                            bordered={false}
+                            className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden"
+                            actions={[
+                              <button
+                                className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
+                                onClick={closeModal}
+                              >
+                                Cerrar
+                              </button>,
+                            ]}
+                          >
+                            <div className="px-4 text-gray-700 mb-5">
+                              <p className="break-words">{task.descr}</p>
+                            </div>
+                          </Card>
+                        </Modal>
+                      )}
                     </Col>
                   ))}
               </Row>
