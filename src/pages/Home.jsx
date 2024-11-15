@@ -254,62 +254,6 @@ export default function Home() {
     });
   };
 
-  const items = [
-    {
-      key: 1,
-      label: "Alta Prioridad",
-      children: (
-        <CollapseTasks
-          tasks={tasks}
-          priority={"alta"}
-          complete={handleCompleteTask}
-          edit={handleEditModal}
-          del={handleDeleteTask}
-          expanded={expanded}
-          seeMore={openCardModal}
-          cardExpanded={cardExpanded}
-          closeCardModal={closeCardModal}
-        />
-      ),
-    },
-    {
-      key: 2,
-      label: "Media Prioridad",
-      children: (
-        <CollapseTasks
-          tasks={tasks}
-          state={"pendiente"}
-          priority={"media"}
-          complete={handleCompleteTask}
-          edit={handleEditModal}
-          del={handleDeleteTask}
-          expanded={expanded}
-          seeMore={openCardModal}
-          cardExpanded={cardExpanded}
-          closeCardModal={closeCardModal}
-        />
-      ),
-    },
-    {
-      key: 3,
-      label: "Baja Prioridad",
-      children: (
-        <CollapseTasks
-          tasks={tasks}
-          state={"pendiente"}
-          priority={"baja"}
-          complete={handleCompleteTask}
-          edit={handleEditModal}
-          del={handleDeleteTask}
-          expanded={expanded}
-          seeMore={openCardModal}
-          cardExpanded={cardExpanded}
-          closeCardModal={closeCardModal}
-        />
-      ),
-    },
-  ];
-
   useEffect(() => {
     setToday(
       `${dayjs().year()}-${(dayjs().month() + 1)
@@ -482,7 +426,7 @@ export default function Home() {
                 </>
               )}
               <Collapse
-                className="w-full"
+                className="w-full mb-5"
                 items={["alta", "media", "baja"].map((t, i) => ({
                   key: i,
                   label: `${t.charAt(0).toUpperCase() + t.slice(1)} Prioridad`,
