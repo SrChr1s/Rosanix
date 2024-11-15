@@ -39,38 +39,6 @@ import { getUsersRequest, getTasksCountsRequest } from "../api/admin";
 import { useAdmin } from "../context/Admin";
 const { Header, Content, Footer, Sider } = Layout;
 
-const usersCount = await getUsersRequest().then((res) => res.data);
-
-const statsData = [
-  {
-    title: "Usuarios Activos",
-    icon: "UserOutlined",
-    color: "#1890ff",
-    value: usersCount.filter((u) => u.active).length,
-  },
-  {
-    title: "Usuarios Inactivos",
-    icon: "UserOutlined",
-    color: "red",
-    value: usersCount.filter((u) => !u.active).length,
-  },
-  {
-    title: "Tareas Almacenadas",
-    icon: "FileDoneOutlined",
-    color: "#52c41a",
-    value: await getTasksCountsRequest().then((res) => res.data.length),
-  },
-  {
-    title: "Nuevos Usuarios Hoy",
-    icon: "UserAddOutlined",
-    color: "#eb2f96",
-    value: usersCount.filter(
-      (u) =>
-        dayjs(u.createdAt).format("DD/MM/YYYY") === dayjs().format("DD/MM/YYYY")
-    ).length,
-  },
-];
-
 const iconMap = {
   UserOutlined: <UserOutlined />,
   FileDoneOutlined: <FileDoneOutlined />,
@@ -91,7 +59,41 @@ export default function Dashboard() {
   const [updateUsers, setUpdateUsers] = useState(true);
 
   const { user, logout } = useAuth();
-  const { users, getAllUsers, createOneUser } = useAdmin();
+  const { users, getAllUsers, getAllTasks, createOneUser } = useAdmin();
+
+  const usersCount = getAllUsers();
+  const tasksCount = getAllTasks();
+
+  const statsData = [
+    {
+      title: "Usuarios Activos",
+      icon: "UserOutlined",
+      color: "#1890ff",
+      value: usersCount.filter((u) => u.active).length,
+    },
+    {
+      title: "Usuarios Inactivos",
+      icon: "UserOutlined",
+      color: "red",
+      value: usersCount.filter((u) => !u.active).length,
+    },
+    {
+      title: "Tareas Almacenadas",
+      icon: "FileDoneOutlined",
+      color: "#52c41a",
+      value: tasksCount.length,
+    },
+    {
+      title: "Nuevos Usuarios Hoy",
+      icon: "UserAddOutlined",
+      color: "#eb2f96",
+      value: usersCount.filter(
+        (u) =>
+          dayjs(u.createdAt).format("DD/MM/YYYY") ===
+          dayjs().format("DD/MM/YYYY")
+      ).length,
+    },
+  ];
 
   const MySwal = withReactContent(Swal);
 
