@@ -582,6 +582,7 @@ export default function Home() {
 
       <AntdModal
         title="Editar Tarea"
+        force
         open={showEditModal}
         onCancel={closeModal}
         onOk={() => document.getElementById("btn-updatetask-submit").click()}

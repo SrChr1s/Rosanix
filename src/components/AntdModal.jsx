@@ -9,10 +9,11 @@ export default function AntdModal({
   btnOk,
   children,
   disabledOk = false,
+  force = false,
 }) {
   return (
     <Modal
-      forceRender
+      forceRender={force}
       title={
         <div className="text-center font-[Nunito] text-white text-xl font-semibold mt-2">
           {title}
