@@ -49,7 +49,7 @@ export default function CollapseTasks({
                 <FaTrash
                   className="place-self-center mt-1 hover:text-[#d47da0] w-full"
                   key="delete"
-                  onClick={() => del(task)}
+                  onClick={() => del(task.id)}
                 />,
               ]}
             >
