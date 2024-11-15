@@ -18,6 +18,7 @@ import {
   Col,
   Divider,
   Modal,
+  Collapse,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import {
@@ -31,6 +32,8 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import AntdModal from "../components/AntdModal";
+import CollapseTasks from "../components/CollapseTasks";
+
 const { Header, Content, Footer, Sider } = Layout;
 const { TextArea } = Input;
 
@@ -70,7 +73,7 @@ export default function Home() {
   };
 
   const closeCardModal = () => {
-    setCardExpanded(null); 
+    setCardExpanded(null);
   };
 
   const handleMenuClick = async (e) => {
@@ -251,6 +254,62 @@ export default function Home() {
     });
   };
 
+  const items = [
+    {
+      key: 1,
+      label: "Alta Prioridad",
+      children: (
+        <CollapseTasks
+          tasks={tasks}
+          priority={"alta"}
+          complete={handleCompleteTask}
+          edit={handleEditModal}
+          del={handleDeleteTask}
+          expanded={expanded}
+          seeMore={openCardModal}
+          cardExpanded={cardExpanded}
+          closeCardModal={closeCardModal}
+        />
+      ),
+    },
+    {
+      key: 2,
+      label: "Media Prioridad",
+      children: (
+        <CollapseTasks
+          tasks={tasks}
+          state={"pendiente"}
+          priority={"media"}
+          complete={handleCompleteTask}
+          edit={handleEditModal}
+          del={handleDeleteTask}
+          expanded={expanded}
+          seeMore={openCardModal}
+          cardExpanded={cardExpanded}
+          closeCardModal={closeCardModal}
+        />
+      ),
+    },
+    {
+      key: 3,
+      label: "Baja Prioridad",
+      children: (
+        <CollapseTasks
+          tasks={tasks}
+          state={"pendiente"}
+          priority={"baja"}
+          complete={handleCompleteTask}
+          edit={handleEditModal}
+          del={handleDeleteTask}
+          expanded={expanded}
+          seeMore={openCardModal}
+          cardExpanded={cardExpanded}
+          closeCardModal={closeCardModal}
+        />
+      ),
+    },
+  ];
+
   useEffect(() => {
     setToday(
       `${dayjs().year()}-${(dayjs().month() + 1)
@@ -303,6 +362,10 @@ export default function Home() {
           Card: {
             colorTextHeading: "#ffffff",
             headerBg: "#e299b6",
+          },
+          Collapse: {
+            contentBg: "transparent",
+            colorTextHeading: "white",
           },
         },
       }}
@@ -389,230 +452,56 @@ export default function Home() {
                   Tareas Pendientes
                 </h2>
               )}
-              <Row gutter={[16, 16]} justify="start">
-                {tasks
-                  .sort(
-                    (a, b) =>
-                      prioridadOrden[a.priority] - prioridadOrden[b.priority]
-                  )
-                  .filter((task) => task.state === "pendiente")
-                  .map((task) => (
-                    <Col xs={24} sm={12} md={8} lg={6} key={task.id}>
-                      <Card
-                        title={
-                          <h2 className="text-lg font-semibold text-white">
-                            {task.title}
-                          </h2>
-                        }
-                        extra={
-                          <span className="text-xs text-[#a35776] pl-5">
-                            {task.createdAt != "CURRENT_TIMESTAMP"
-                              ? dayjs(task.createdAt).format("DD/MM/YYYY")
-                              : dayjs().format("DD/MM/YYYY")}
-                          </span>
-                        }
-                        bordered={false}
-                        className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
-                        actions={[
-                          <FaCircleCheck
-                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                            key="complete"
-                            onClick={() => handleCompleteTask(task)}
-                          />,
-                          <FaPencil
-                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                            key="edit"
-                            onClick={() => handleEditModal(task)}
-                          />,
-                          <FaTrash
-                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                            key="delete"
-                            onClick={() => handleDeleteTask(task.id)}
-                          />,
-                        ]}
-                      >
-                        {task.descr ? (
-                          <div className="px-4 text-gray-700 mb-5">
-                            <div className="relative">
-                            <p
-                                className={`${
-                                  expanded[task.id] ? "" : "line-clamp-1"
-                                } break-words`}
-                              >
-                                {task.descr}
-                              </p>
-                              {task.descr.length > 100 && (
-                                <button
-                                  className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
-                                  onClick={() => openCardModal(task.id)}
-                                >
-                                  Ver más
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="px-4 text-gray-700 mb-5">
-                            <p className="italic text-gray-500">
-                              Sin descripción
-                            </p>
-                          </div>
-                        )}
-                      </Card>
-                      {cardExpanded === task.id && (
-                        <Modal
-                          open={true}
-                          onCancel={closeCardModal}
-                          footer={null}
-                          closable={false}
-                          className="custom-task-modal"
-                        >
-                          <Card
-                            title={
-                              <h2 className="text-lg font-semibold text-white">
-                                {task.title}
-                              </h2>
-                            }
-                            extra={
-                              <span className="text-xs text-[#a35776] pl-5">
-                                {dayjs(task.createdAt).format("DD/MM/YYYY")}
-                              </span>
-                            }
-                            bordered={false}
-                            className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden"
-                            actions={[
-                              <button
-                                className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
-                                onClick={closeCardModal}
-                              >
-                                Cerrar
-                              </button>,
-                            ]}
-                          >
-                            <div className="px-4 text-gray-700 mb-5">
-                              <p className="break-words">{task.descr}</p>
-                            </div>
-                          </Card>
-                        </Modal>
-                      )}
-                    </Col>
-                  ))}
-                {tasks.find((task) => task.state === "completada") && (
-                  <>
-                    <Divider />
-                    <h2 className="text-2xl text-white w-full pb-5">
-                      Tareas Completadas
-                    </h2>
-                  </>
-                )}
-                {tasks
-                  .sort(
-                    (a, b) =>
-                      prioridadOrden[a.priority] - prioridadOrden[b.priority]
-                  )
-                  .filter((task) => task.state === "completada")
-                  .map((task) => (
-                    <Col
-                      className="mb-5"
-                      xs={24}
-                      sm={12}
-                      md={8}
-                      lg={6}
-                      key={task.id}
-                    >
-                      <Card
-                        title={
-                          <h2 className="text-lg font-semibold text-white">
-                            {task.title}
-                          </h2>
-                        }
-                        extra={
-                          <span className="text-xs text-[#a35776] pl-5">
-                            {dayjs(task.createdAt).format("DD/MM/YYYY")}
-                          </span>
-                        }
-                        bordered={false}
-                        className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden duration-150 hover:scale-105"
-                        actions={[
-                          // <FaPencil
-                          //   className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                          //   key="edit"
-                          //   onClick={() => handleEditModal(task)}
-                          // />,
-                          <FaTrash
-                            className="place-self-center mt-1 hover:text-[#d47da0] w-full"
-                            key="delete"
-                            onClick={() => handleDeleteTask(task.id)}
-                          />,
-                        ]}
-                      >
-                        {task.descr ? (
-                          <div className="px-4 text-gray-700 mb-5">
-                            <div className="relative">
-                              <p
-                                className={`${
-                                  expanded[task.id] ? "" : "line-clamp-1"
-                                } break-words`}
-                              >
-                                {task.descr}
-                              </p>
-                              {task.descr.length > 100 && (
-                                <button
-                                  className="bottom-0 right-0 text-sm text-[#d16d95] hover:text-[#d47da0]"
-                                  onClick={() => openCardModal(task.id)}
-                                >
-                                  Ver más
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="px-4 text-gray-700 mb-5">
-                            <p className="italic text-gray-500">
-                              Sin descripción
-                            </p>
-                          </div>
-                        )}
-                      </Card>
-                      {cardExpanded === task.id && (
-                        <Modal
-                          open={true}
-                          onCancel={closeCardModal}
-                          footer={null}
-                          closable={false}
-                          className="custom-task-modal"
-                        >
-                          <Card
-                            title={
-                              <h2 className="text-lg font-semibold text-white">
-                                {task.title}
-                              </h2>
-                            }
-                            extra={
-                              <span className="text-xs text-[#a35776] pl-5">
-                                {dayjs(task.createdAt).format("DD/MM/YYYY")}
-                              </span>
-                            }
-                            bordered={false}
-                            className="w-full flex flex-col justify-between min-h-[210px] shadow-lg rounded-lg overflow-hidden"
-                            actions={[
-                              <button
-                                className="text-sm text-[#d16d95] hover:text-[#d47da0] w-full"
-                                onClick={closeCardModal}
-                              >
-                                Cerrar
-                              </button>,
-                            ]}
-                          >
-                            <div className="px-4 text-gray-700 mb-5">
-                              <p className="break-words">{task.descr}</p>
-                            </div>
-                          </Card>
-                        </Modal>
-                      )}
-                    </Col>
-                  ))}
-              </Row>
+              <Collapse
+                className="w-full"
+                items={["alta", "media", "baja"].map((t, i) => ({
+                  key: i,
+                  label: `${t.charAt(0).toUpperCase() + t.slice(1)} Prioridad`,
+                  children: (
+                    <CollapseTasks
+                      tasks={tasks}
+                      state={"pendiente"}
+                      priority={t}
+                      complete={handleCompleteTask}
+                      edit={handleEditModal}
+                      del={handleDeleteTask}
+                      expanded={expanded}
+                      seeMore={openCardModal}
+                      cardExpanded={cardExpanded}
+                      closeCardModal={closeCardModal}
+                    />
+                  ),
+                }))}
+              />
+              {tasks.find((task) => task.state === "completada") && (
+                <>
+                  <Divider />
+                  <h2 className="text-2xl text-white w-full pb-5">
+                    Tareas Completadas
+                  </h2>
+                </>
+              )}
+              <Collapse
+                className="w-full"
+                items={["alta", "media", "baja"].map((t, i) => ({
+                  key: i,
+                  label: `${t.charAt(0).toUpperCase() + t.slice(1)} Prioridad`,
+                  children: (
+                    <CollapseTasks
+                      tasks={tasks}
+                      state={"completada"}
+                      priority={t}
+                      complete={handleCompleteTask}
+                      edit={handleEditModal}
+                      del={handleDeleteTask}
+                      expanded={expanded}
+                      seeMore={openCardModal}
+                      cardExpanded={cardExpanded}
+                      closeCardModal={closeCardModal}
+                    />
+                  ),
+                }))}
+              />
             </div>
           </Content>
 
