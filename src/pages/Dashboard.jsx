@@ -573,11 +573,21 @@ export default function Dashboard() {
           >
             <Form.Item
               name="name"
+              validateFirst
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Nombre
                 </span>
               }
+              rules={[
+                { required: true, message: "Este campo es requerido" },
+                {
+                  pattern: new RegExp(/^[A-Za-z]+$/i),
+                  message: "Solo puede debe contener letras",
+                },
+                { min: 3, message: "Debe contener al menos 3 caracteres" },
+                { max: 30, message: "No puede sobrepasar los 30 caracteres" },
+              ]}
             >
               <Input
                 id="name"
@@ -589,6 +599,7 @@ export default function Dashboard() {
 
             <Form.Item
               name="email"
+              validateFirst
               label={
                 <span className="text-white font-[Nunito] font-semibold select-none">
                   Email
