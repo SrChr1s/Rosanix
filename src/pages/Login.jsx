@@ -57,6 +57,9 @@ export default function Login() {
         layout="vertical"
         autoComplete="off"
         onFinish={handleSend}
+        initialValues={{
+          remember: false,
+        }}
       >
         <div className="self-center w-60 sm:w-72 mb-5 ">
           <Link to="/">
@@ -100,18 +103,20 @@ export default function Login() {
           />
         </Form.Item>
 
-        <Form.Item>
-          <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center">
+          <Form.Item name="remember" valuePropName="checked">
             <Checkbox className="select-none font-[Nunito] text-sm">
               Recuérdame
             </Checkbox>
+          </Form.Item>
+          <Form.Item>
             <div className="hover:scale-105 duration-100">
-              <Link to="/forgot-password" className="font-[Nunito] text-sm">
+              <Link to="/forgotpass" className="font-[Nunito] text-sm">
                 Olvidé la contraseña
               </Link>
             </div>
-          </div>
-        </Form.Item>
+          </Form.Item>
+        </div>
 
         <Form.Item className="self-center">
           <Button form text="Entrar" />

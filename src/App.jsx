@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import ForgotPass from "./pages/ForgotPass";
 
 const DashboardLazy = lazy(() => import("./pages/Dashboard"));
 const HomeLazy = lazy(() => import("./pages/Home"));
@@ -20,6 +21,7 @@ function App() {
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgotpass" element={<ForgotPass />} />
       </Route>
 
       <Route element={<ProtectedRoute role="usuario" fallback="/login" />}>

@@ -78,11 +78,6 @@ const iconMap = {
   UserAddOutlined: <UserAddOutlined />,
 };
 
-const prioridadOrden = {
-  activo: 1,
-  inactivo: 2,
-};
-
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(false);

@@ -391,61 +391,71 @@ export default function Home() {
           </Header>
           <Content className="flex flex-grow justify-center pt-2 bg-gradient-to-b from-[#a5caf5] to-[#cebdf4]">
             <div className="w-full max-w-[calc(100%-2rem)] px-4 lg:px-0">
-              {tasks.length != 0 && (
+              {tasks.find((task) => task.state === "pendiente") && (
                 <h2 className="text-2xl text-white w-full pb-5">
                   Tareas Pendientes
                 </h2>
               )}
-              <Collapse
-                className="w-full"
-                items={["alta", "media", "baja"].map((t, i) => ({
-                  key: i,
-                  label: `${t.charAt(0).toUpperCase() + t.slice(1)} Prioridad`,
-                  children: (
-                    <CollapseTasks
-                      tasks={tasks}
-                      state={"pendiente"}
-                      priority={t}
-                      complete={handleCompleteTask}
-                      edit={handleEditModal}
-                      del={handleDeleteTask}
-                      expanded={expanded}
-                      seeMore={openCardModal}
-                      cardExpanded={cardExpanded}
-                      closeCardModal={closeCardModal}
-                    />
-                  ),
-                }))}
-              />
+              {tasks.find((task) => task.state === "pendiente") && (
+                <Collapse
+                  className="w-full"
+                  items={["alta", "media", "baja"].map((t, i) => ({
+                    key: i,
+                    label: `${
+                      t.charAt(0).toUpperCase() + t.slice(1)
+                    } Prioridad`,
+                    children: (
+                      <CollapseTasks
+                        tasks={tasks}
+                        state={"pendiente"}
+                        priority={t}
+                        complete={handleCompleteTask}
+                        edit={handleEditModal}
+                        del={handleDeleteTask}
+                        expanded={expanded}
+                        seeMore={openCardModal}
+                        cardExpanded={cardExpanded}
+                        closeCardModal={closeCardModal}
+                      />
+                    ),
+                  }))}
+                />
+              )}
               {tasks.find((task) => task.state === "completada") && (
                 <>
-                  <Divider />
+                  {tasks.find((task) => task.state === "pendiente") && (
+                    <Divider />
+                  )}
                   <h2 className="text-2xl text-white w-full pb-5">
                     Tareas Completadas
                   </h2>
                 </>
               )}
-              <Collapse
-                className="w-full mb-5"
-                items={["alta", "media", "baja"].map((t, i) => ({
-                  key: i,
-                  label: `${t.charAt(0).toUpperCase() + t.slice(1)} Prioridad`,
-                  children: (
-                    <CollapseTasks
-                      tasks={tasks}
-                      state={"completada"}
-                      priority={t}
-                      complete={handleCompleteTask}
-                      edit={handleEditModal}
-                      del={handleDeleteTask}
-                      expanded={expanded}
-                      seeMore={openCardModal}
-                      cardExpanded={cardExpanded}
-                      closeCardModal={closeCardModal}
-                    />
-                  ),
-                }))}
-              />
+              {tasks.find((task) => task.state === "completada") && (
+                <Collapse
+                  className="w-full mb-5"
+                  items={["alta", "media", "baja"].map((t, i) => ({
+                    key: i,
+                    label: `${
+                      t.charAt(0).toUpperCase() + t.slice(1)
+                    } Prioridad`,
+                    children: (
+                      <CollapseTasks
+                        tasks={tasks}
+                        state={"completada"}
+                        priority={t}
+                        complete={handleCompleteTask}
+                        edit={handleEditModal}
+                        del={handleDeleteTask}
+                        expanded={expanded}
+                        seeMore={openCardModal}
+                        cardExpanded={cardExpanded}
+                        closeCardModal={closeCardModal}
+                      />
+                    ),
+                  }))}
+                />
+              )}
             </div>
           </Content>
 

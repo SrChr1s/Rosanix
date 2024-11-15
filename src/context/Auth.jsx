@@ -4,6 +4,9 @@ import {
   loginRequest,
   logoutRequest,
   verTokenRequest,
+  forgotPassRequest,
+  resetPassRequest,
+  testCodeRequest,
 } from "../api/auth";
 import Cookies from "js-cookie";
 import { updateInfoRequest, updatePasswRequest } from "../api/users";
@@ -75,6 +78,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const forgotPassw = async (email) => {
+    const res = await forgotPassRequest(email);
+    return res;
+  };
+
+  const testCode = async (values) => {
+    const res = await testCodeRequest(values);
+    return res;
+  };
+
+  const resetPassw = async (values) => {
+    const res = await resetPassRequest(values);
+    return res;
+  };
+
   useEffect(() => {
     async function checkLogin() {
       const cookies = Cookies.get();
@@ -113,6 +131,9 @@ export const AuthProvider = ({ children }) => {
         logout,
         updateInfo,
         changePassw,
+        forgotPassw,
+        testCode,
+        resetPassw,
         isAuth,
         loading,
         errors,
