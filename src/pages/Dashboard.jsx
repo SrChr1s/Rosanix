@@ -191,8 +191,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function test() {
-      setUsersCount(getAllUsers());
-      setTasksCount(getAllTasks());
+      setUsersCount(await getUsersRequest());
+      setTasksCount(await getTasksCountsRequest());
 
       setStatsData([
         {
