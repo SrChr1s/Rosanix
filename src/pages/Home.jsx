@@ -85,11 +85,11 @@ export default function Home() {
   };
 
   const handleCreateTask = async (values) => {
+    closeModal();
     setLoading(true);
     const res = await createTask(values);
 
     if (res.status === 200) {
-      closeModal();
       setLoading(false);
       return MySwal.fire({
         icon: "success",
@@ -110,6 +110,7 @@ export default function Home() {
   };
 
   const handleUpdateTask = async (values) => {
+    closeModal();
     setLoading(true);
     const res = await updateTask({
       ...values,
@@ -120,7 +121,6 @@ export default function Home() {
     });
 
     if (res.status === 200) {
-      closeModal();
       setLoading(false);
       return MySwal.fire({
         icon: "success",
@@ -205,6 +205,7 @@ export default function Home() {
   };
 
   const handlePasswordChange = async (values) => {
+    closeModal();
     setLoading(true);
     const res = await changePassw(values);
     if (res.status == 200) {
@@ -215,7 +216,7 @@ export default function Home() {
         text: "Has cambiado tu contraseña con éxito!",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#e299b6",
-      }).then(() => closeModal());
+      });
     }
     setLoading(false);
     MySwal.fire({
@@ -224,7 +225,7 @@ export default function Home() {
       text: res.data,
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#e299b6",
-    }).then(() => closeModal());
+    });
   };
 
   const closeModal = () => {
