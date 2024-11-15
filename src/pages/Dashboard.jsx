@@ -57,12 +57,11 @@ export default function Dashboard() {
   const [logoutSure, setLogoutSure] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [updateUsers, setUpdateUsers] = useState(true);
+  const [usersCount, setUsersCount] = useState(null);
+  const [tasksCount, setTasksCount] = useState(null);
 
   const { user, logout } = useAuth();
   const { users, getAllUsers, getAllTasks, createOneUser } = useAdmin();
-
-  const usersCount = getAllUsers();
-  const tasksCount = getAllTasks();
 
   const statsData = [
     {
@@ -219,6 +218,11 @@ export default function Dashboard() {
       setUpdateUsers(false);
     }
   }, [updateUsers]);
+
+  useEffect(() => {
+    setUsersCount(getAllUsers());
+    setTasksCount(getAllTasks());
+  }, []);
 
   return (
     <ConfigProvider
