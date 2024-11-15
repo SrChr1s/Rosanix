@@ -184,11 +184,7 @@ export default function Dashboard() {
     if (updateUsers) {
       getAllUsers();
       setUpdateUsers(false);
-    }
-  }, [updateUsers]);
 
-  useEffect(() => {
-    async function test() {
       setStatsData([
         {
           title: "Usuarios Activos",
@@ -206,6 +202,7 @@ export default function Dashboard() {
           title: "Tareas Almacenadas",
           icon: "FileDoneOutlined",
           color: "#52c41a",
+          value: 1,
           // value: await getTasksCountsRequest().then((res) => res.data.length),
         },
         {
@@ -220,8 +217,7 @@ export default function Dashboard() {
         },
       ]);
     }
-    test();
-  }, []);
+  }, [updateUsers]);
 
   return (
     <ConfigProvider
